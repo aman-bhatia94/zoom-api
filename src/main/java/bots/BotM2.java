@@ -58,14 +58,10 @@ public class BotM2 {
 
     public static void main(String[] args) {
 
-        BotM2.parseBotIniFile("/Users/amanbhatia/Documents/Coursework/Quarter3/Programming Styles/zoomapi/src/main/java/bots/bot.ini");
+
+        BotM2.parseBotIniFile("src/main/java/bots/bot.ini");
         BotM2.connect(); //creating ngrock tunnel
         BotM2.display();
-
-
-
-
-
 
     }
 }
