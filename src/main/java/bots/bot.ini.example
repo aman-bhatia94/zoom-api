@@ -1,0 +1,16 @@
+; Copy this file to bot.ini and write your own credentials there
+
+[OAuth]
+client_id = enter your client_id
+client_secret = enter your client_secret
+port = 4001
+; Path to your browser executable
+; Use this for Windows:
+; browser_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+; Use this for WSL or equivalent in Mac
+;/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe
+browser_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+[JWT]
+api_key = YOUR_API_KEY
+api_secret = YOUR_API_SECRET
