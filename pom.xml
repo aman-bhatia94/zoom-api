@@ -21,6 +21,7 @@
         </plugins>
     </build>
 
+
     <!-- this jitpack repo will be used to get ngrock dependency -->
     <repositories>
         <repository>
@@ -30,6 +31,14 @@
     </repositories>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.oltu.oauth2/org.apache.oltu.oauth2.client -->
+        <dependency>
+            <groupId>org.apache.oltu.oauth2</groupId>
+            <artifactId>org.apache.oltu.oauth2.client</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.ini4j/ini4j -->
         <dependency>
             <groupId>org.ini4j</groupId>
@@ -43,6 +52,8 @@
             <artifactId>ngrok-java-client</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
+
+
     </dependencies>
 
 
