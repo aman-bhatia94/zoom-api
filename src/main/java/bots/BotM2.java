@@ -3,6 +3,8 @@ package bots;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.ini4j.Ini;
 import xyz.dmanchon.ngrok.client.NgrokTunnel;
+import zoomapi.OAuthZoomClient;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -10,7 +12,7 @@ public class BotM2 {
 
     public static String clientId;
     public static String clientSecret;
-    public static int port;
+    public static String port;
     public static String browserPath;
     public static String redirect_url;
     public static NgrokTunnel tunnel;
@@ -20,7 +22,7 @@ public class BotM2 {
             Ini ini = new Ini(new File(filepath));
             clientId = ini.get("OAuth","client_id");
             clientSecret = ini.get("OAuth","client_secret");
-            port = Integer.parseInt(ini.get("OAuth","port"));
+            port = ini.get("OAuth","port");
             browserPath = ini.get("OAuth","browser_path");
         } catch (IOException e) {
             e.printStackTrace();
@@ -30,7 +32,8 @@ public class BotM2 {
 
     public static void connect(){
         try {
-            tunnel = new NgrokTunnel(port);
+            int portInteger = Integer.parseInt(port);
+            tunnel = new NgrokTunnel(portInteger);
             redirect_url = tunnel.url();
 
         } catch (UnirestException e) {
@@ -62,6 +65,9 @@ public class BotM2 {
         BotM2.parseBotIniFile("src/main/java/bots/bot.ini");
         BotM2.connect(); //creating ngrock tunnel
         BotM2.display();
+
+        OAuthZoomClient client = new OAuthZoomClient(clientId,clientSecret,port,redirect_url,browserPath);
+
 
     }
 }
