@@ -3,6 +3,8 @@ package zoomapi;
 import utils.OAuthTokenFetcher;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class OAuthZoomClient extends ZoomClient{
 
@@ -24,6 +26,12 @@ public class OAuthZoomClient extends ZoomClient{
         this.config.put("token",oAuthToken);
         this.dataType = "json";
         this.timeout = 15;
+
+        Iterator hmIterator = this.config.entrySet().iterator();
+        while (hmIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)hmIterator.next();
+            System.out.println(mapElement.getKey() + " : " + mapElement.getValue());
+        }
 
         this.components = new HashMap<>();
         /**TODO
