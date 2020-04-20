@@ -65,9 +65,7 @@ public class BotM2 {
         BotM2.parseBotIniFile("src/main/java/bots/bot.ini");
         BotM2.connect(); //creating ngrock tunnel
         BotM2.display();
-
         OAuthZoomClient client = new OAuthZoomClient(clientId,clientSecret,port,redirect_url,browserPath);
-
-
+        //user_response = client.user.get(id='me')
     }
 }
