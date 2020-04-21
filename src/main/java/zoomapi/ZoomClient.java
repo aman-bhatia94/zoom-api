@@ -1,6 +1,6 @@
 package zoomapi;
 
-import com.sun.org.apache.bcel.internal.Const;
+
 
 import java.util.HashMap;
 
@@ -36,7 +36,7 @@ public class ZoomClient {
     private HashMap<String,String> config;
     public ZoomClient(String apiKey, String apiSecret) {
 
-        super(API_BASE_URIS);
+        //super(API_BASE_URIS);
         this.BASE_URI = API_BASE_URIS;
         this.timeout = 15;
         this.dataType = "json";
@@ -50,49 +50,49 @@ public class ZoomClient {
     }
 
 
-    public void refreshToken(){
+    public void setRefreshToken(){
 
         //TODO
 
     }
     //get api key
-    public String apiKey(){
+    public String getApiKey(){
         return this.config.get("api_key");
     }
     //set api key
     public void setAPiKey(String value){
         this.config.put("api_key",value);
-        refreshToken();
+        setRefreshToken();
     }
 
     //get api secret
-    public String apiSecret(){
+    public String getApiSecret(){
         return this.config.get("api_secret");
     }
 
     //set api secret
     public void setAPiSecret(String value){
         this.config.put("api_secret",value);
-        refreshToken();
+        setRefreshToken();
     }
 
     //get report
-    public String report(){
+    public String getReport(){
         return this.components.get("report");
     }
 
     //get user
-    public String user(){
+    public String getUser(){
         return this.components.get("user");
     }
 
     //get meeting
-    public String webinar(){
+    public String getWebinar(){
         return this.components.get("webinar");
     }
 
     //get recording
-    public String recording(){
+    public String getRecording(){
         return this.components.get("recording");
     }
 

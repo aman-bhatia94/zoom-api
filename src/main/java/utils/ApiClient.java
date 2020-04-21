@@ -94,7 +94,7 @@ public class ApiClient {
     // :param cookies: request cookies
     // :param cookies: request cookies
     // :return: The :class:``requests.Response`` object for this request
-    public String postRequest(String endPoint, Map<String, String> param, String data,
+    public String postRequest(String endPoint, Map<String, String> params, String data,
                        Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
 
         data = getStringFromData(data);
