@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 //This class is in a package utils since the class was present in python version of utils.py
@@ -72,14 +73,14 @@ public class ApiClient {
     // :return: The :class:``requests.Response`` object for this request
     public String getRequest(String endPoint, Map<String, String> params, Map<String, String> headers) throws IOException, InterruptedException {
         if (headers == null) {
+            headers = new HashMap<>();
             headers.put("Authorization", String.format("Bearer %s", token));
         }
 
-        //todo add params
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(endPoint))
-                .headers(String.valueOf(headers.keySet()), String.valueOf(headers.values()))
+                .header(Utils.trimByOne(String.valueOf(headers.keySet())), Utils.trimByOne(String.valueOf(headers.values())))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -94,8 +95,10 @@ public class ApiClient {
     // :param cookies: request cookies
     // :param cookies: request cookies
     // :return: The :class:``requests.Response`` object for this request
+
     public String postRequest(String endPoint, Map<String, String> params, String data,
                        Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
+
 
         data = getStringFromData(data);
         if (headers == null) {
@@ -106,7 +109,7 @@ public class ApiClient {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(endPoint))
-                .headers(String.valueOf(headers.keySet()), String.valueOf(headers.values()))
+                .header(Utils.trimByOne(String.valueOf(headers.keySet())), Utils.trimByOne(String.valueOf(headers.values())))
                 .POST(HttpRequest.BodyPublishers.ofString(data))
                 .build();
 
@@ -122,7 +125,7 @@ public class ApiClient {
     // :param cookies: request cookies
     // :return: The :class:``requests.Response`` object for this request
     public String patchRequest(String endPoint, Map<String, String> params, String data,
-                        Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
+                               Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
 
         data = getStringFromData(data);
         if (headers == null) {
@@ -133,7 +136,7 @@ public class ApiClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(endPoint))
                 .method("PATCH", HttpRequest.BodyPublishers.ofString(data))
-                .headers(String.valueOf(headers.keySet()), String.valueOf(headers.values()))
+                .header(Utils.trimByOne(String.valueOf(headers.keySet())), Utils.trimByOne(String.valueOf(headers.values())))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -149,7 +152,7 @@ public class ApiClient {
     // :param cookies: request cookies
     // :return: The :class:``requests.Response`` object for this request
     public String deleteRequest(String endPoint, Map<String, String> params, String data,
-                         Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
+                                Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
         data = getStringFromData(data);
         if (headers == null) {
             headers.put("Authorization", String.format("Bearer %s", token));
@@ -157,7 +160,7 @@ public class ApiClient {
         headers.put("Content-type", "application/json");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .headers(String.valueOf(headers.keySet()), String.valueOf(headers.values()))
+                .header(Utils.trimByOne(String.valueOf(headers.keySet())), Utils.trimByOne(String.valueOf(headers.values())))
                 .DELETE()
                 .uri(URI.create(endPoint))
                 .build();
@@ -173,7 +176,7 @@ public class ApiClient {
     // :param cookies: request cookies
     // :return: The :class:``requests.Response`` object for this request
     public String putRequest(String endPoint, Map<String, String> params, String data,
-                      Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
+                             Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
         data = getStringFromData(data);
         if (headers == null) {
             headers.put("Authorization", String.format("Bearer %s", token));
@@ -181,7 +184,7 @@ public class ApiClient {
         headers.put("Content-type", "application/json");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .headers(String.valueOf(headers.keySet()), String.valueOf(headers.values()))
+                .header(Utils.trimByOne(String.valueOf(headers.keySet())), Utils.trimByOne(String.valueOf(headers.values())))
                 .PUT(HttpRequest.BodyPublishers.ofString(data))
                 .uri(URI.create(endPoint))
                 .build();
