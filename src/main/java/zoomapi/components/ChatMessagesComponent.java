@@ -1,10 +1,12 @@
 package zoomapi.components;
 
+import java.util.Map;
+
 public class ChatMessagesComponent {
 
     //TODO Throtting
 
-    public static String getUserChatMessages(/*parameters*/){
+    public static String getUserChatMessages(Map<String,String> params){
         //TODO
         return null;
     }

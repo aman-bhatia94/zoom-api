@@ -14,6 +14,7 @@ import java.util.Map;
 //Ask a question for this design decision
 public class ApiClient {
 
+    private static ApiClient apiClient = null;
     String baseUri;
     int timeout;
     //TODO check this please
@@ -22,12 +23,19 @@ public class ApiClient {
     //todo check if its needed
     private static final Gson gson = new Gson();
 
-    public ApiClient(String baseUri, String token) {
+    private ApiClient(String baseUri, String token) {
         this.baseUri = baseUri;
         this.timeout = 15;
         this.token = token;
 
         //TODO kwargs
+    }
+
+    public static ApiClient getApiClientInstance(String baseUri, String token){
+        if(apiClient == null){
+            apiClient = new ApiClient(baseUri, token);
+        }
+        return apiClient;
     }
 
     //get timeout
