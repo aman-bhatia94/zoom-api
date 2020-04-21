@@ -1,28 +1,73 @@
 package zoomapi.components;
 
+import com.google.gson.Gson;
+import utils.ApiClient;
+import utils.Utils;
+import zoomapi.components.componentRequestData.SendChatMessageRequest;
+import zoomapi.components.componentRequestData.UpdateMessageRequest;
+
 import java.util.Map;
 
 public class ChatMessagesComponent {
 
     //TODO Throtting
 
-    public static String getUserChatMessages(Map<String,String> params){
-        //TODO
-        return null;
+    private static final Gson gson = new Gson();
+
+    public ChatMessagesComponent(String baseUri, String token) {
+        ApiClient.init(baseUri, token);
     }
 
-    public static String sendChatMessage(){
-        //TODO
-        return null;
+    public void listUserChatMessages(Map<String, String> params) {
+        try {
+            String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/%s/messages";
+            url = String.format(url, params.get("userId"));
+            url = Utils.appendToUrl(url, params);
+            String response = ApiClient.getApiClient().getRequest(url, params, null);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            System.out.println("Response: " + response);
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 
-    public static String updateChatMessage(){
-        //TODO
-        return null;
+    public void sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {
+        try {
+            String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/%s/messages";
+            url = String.format(url, params.get("userId"));
+            String dataString = gson.toJson(data);
+            String response = ApiClient.getApiClient().postRequest(url, params, dataString, null, null);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            System.out.println("Response: " + response);
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 
-    public static String deleteMessage(){
-        //TODO
-        return null;
+    public void updateChatMessage(Map<String, String> params, UpdateMessageRequest data) {
+        try {
+            String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/me/messages/%s";
+            url = String.format(url, params.get("messageId"));
+            String dataString = gson.toJson(data);
+            String response = ApiClient.getApiClient().putRequest(url, params, dataString, null, null);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            System.out.println("Response: " + response);
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
+
+    public void deleteMessage(Map<String, String> params) {
+        try {
+            String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/me/messages/%s";
+            url = String.format(url, params.get("messageId"));
+            url = Utils.appendToUrl(url, params);
+            String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            System.out.println("Response: " + response);
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 }
