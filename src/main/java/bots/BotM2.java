@@ -209,8 +209,10 @@ public class BotM2 {
 
         //remove channel member
         params = new HashMap<>();
+        System.out.println("Enter id to be removed: ");
+        String memberIdToBeRemoved = input.next();
         params.put("channelId", newChannelId);
-        params.put("memberId", "fstkfao6qpwjcvtgqkrv9a");
+        params.put("memberId", memberIdToBeRemoved);
         chatChannelComponent.removeMember(params);
 
         System.out.println("Press enter to continue: ");
