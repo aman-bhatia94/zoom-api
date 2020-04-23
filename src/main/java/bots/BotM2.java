@@ -101,9 +101,10 @@ public class BotM2 {
         createChannelRequest.setName(channelName);
         createChannelRequest.setType(1);
         Map<String, String> createChannelResponse = chatChannelComponent.createChannel(params, createChannelRequest);
+        System.out.println("Response: " + createChannelResponse);
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //update channel
         System.out.println("Update Channel");
@@ -114,10 +115,10 @@ public class BotM2 {
         System.out.println("Enter new channel name");
         String newChannelName = input.next();
         updateChannelRequest.setName(newChannelName);
-        chatChannelComponent.updateChannel(params, updateChannelRequest);
+        System.out.println("Response: " + chatChannelComponent.updateChannel(params, updateChannelRequest));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //list user channels
         System.out.println("List User Channels");
@@ -126,7 +127,7 @@ public class BotM2 {
         System.out.println("Response: " + chatChannelComponent.listUserChannels(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //get channel
         String publicChannelId = "109ab13498c64fd5911a42be1076ea6b";
@@ -135,7 +136,7 @@ public class BotM2 {
         System.out.println("Response: " + chatChannelComponent.getChannel(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //send chat message
         params = new HashMap<>();
@@ -149,16 +150,16 @@ public class BotM2 {
         System.out.println("Response: " + sendChatResponse);
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //lists the chat messages
         params = new HashMap<>();
         params.put("userId", "me");
         params.put("to_channel", newChannelId);
-        chatMessagesComponent.listUserChatMessages(params);
+        System.out.println("Response: " + chatMessagesComponent.listUserChatMessages(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //update message
         params = new HashMap<>();
@@ -169,19 +170,19 @@ public class BotM2 {
         String newMsg = input.next();
         updateMessageRequest.setMessage(newMsg);
         updateMessageRequest.setTo_channel(newChannelId);
-        chatMessagesComponent.updateChatMessage(params, updateMessageRequest);
+        System.out.println("Response: " + chatMessagesComponent.updateChatMessage(params, updateMessageRequest));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //delete message
         params = new HashMap<>();
         params.put("to_channel", newChannelId);
         params.put("messageId", msgId);
-        chatMessagesComponent.deleteMessage(params);
+        System.out.println("Response: " + chatMessagesComponent.deleteMessage(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //invite channel members
         params = new HashMap<>();
@@ -194,18 +195,18 @@ public class BotM2 {
         memberList.add(member);
         InviteChannelMembersRequest data = new InviteChannelMembersRequest();
         data.setMembers(memberList);
-        chatChannelComponent.inviteChannelMembers(params, data);
+        System.out.println("Response: " + chatChannelComponent.inviteChannelMembers(params, data));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //list channel members
         params = new HashMap<>();
         params.put("channelId", newChannelId);
         Map<String, String> response = chatChannelComponent.listChannelMember(params);
-
+        System.out.println("Response: " + response);
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //remove channel member
         params = new HashMap<>();
@@ -213,30 +214,30 @@ public class BotM2 {
         String memberIdToBeRemoved = input.next();
         params.put("channelId", newChannelId);
         params.put("memberId", memberIdToBeRemoved);
-        chatChannelComponent.removeMember(params);
+        System.out.println("Response: " + chatChannelComponent.removeMember(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //join channel
         params = new HashMap<>();
         params.put("channelId", publicChannelId);
-        chatChannelComponent.joinChannel(params);
+        System.out.println("Response: " + chatChannelComponent.joinChannel(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //leave channel
         params = new HashMap<>();
         params.put("channelId", publicChannelId);
-        chatChannelComponent.leaveChannel(params);
+        System.out.println("Response: " + chatChannelComponent.leaveChannel(params));
 
         System.out.println("Press enter to continue: ");
-        input.nextLine();
+        input.next();
 
         //delete channel
         params = new HashMap<>();
         params.put("channelId", newChannelId);
-        chatChannelComponent.deleteChannel(params);
+        System.out.println("Response: " + chatChannelComponent.deleteChannel(params));
     }
 }
