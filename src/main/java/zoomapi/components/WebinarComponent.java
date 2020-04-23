@@ -16,6 +16,7 @@ public class WebinarComponent extends BaseComponent {
     Throttled updateWebinarThrottler = null;
     Throttled deleteWebinarThrottler = null;
     Throttled updateStatusThrottler = null;
+
     public WebinarComponent(String baseUri, String token) {
         super(baseUri, token);
     }

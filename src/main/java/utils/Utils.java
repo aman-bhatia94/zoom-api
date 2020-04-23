@@ -10,20 +10,21 @@ import java.util.Map;
 
 public class Utils {
 
+
     public static String trimByOne(String str) {
         if (str.length() < 2)
             return str;
         return str.substring(1, str.length() - 1);
     }
 
-    boolean requireKeys(Map<String, String> d, String[] keys, boolean allowNone) {
+    public static boolean requireKeys(Map<String, String> d, String[] keys, boolean allowNull) {
 //        """Require that the object have the given keys
 //
 //    :param d: The dict the check
 //    :param keys: The keys to check :attr:`obj` for. This can either be a single
 //                 string, or an iterable of strings
 //
-//    :param allow_none: Whether ``None`` values are allowed
+//    :param allowNull: Whether ``Null`` values are allowed
 //    :raises:
 //        :ValueError: If any of the keys are missing from the obj
 
@@ -32,7 +33,7 @@ public class Utils {
                 if (!d.containsKey(k)) {
                     throw new Exception(String.format("%s must be set", k));
                 }
-                if (!allowNone && d.get(k) == null) {
+                if (!allowNull && d.get(k) == null) {
                     throw new Exception(String.format("%s cannot be None", k));
                 }
             }

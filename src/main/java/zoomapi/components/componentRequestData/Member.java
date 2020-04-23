@@ -8,6 +8,6 @@ public class Member {
     }
 
     public void setEmail(String email) {
-        email = email;
+        this.email = email;
     }
 }

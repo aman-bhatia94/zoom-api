@@ -21,12 +21,13 @@ public class ChatChannelComponent extends BaseComponent {
     Throttled joinChannelThrottler = null;
     Throttled leaveChannelThrottler = null;
     Throttled removeMemberThrottler = null;
+
     public ChatChannelComponent(String baseUri, String token) {
         super(baseUri, token);
     }
 
     public void listUserChannels(Map<String, String> params) {
-        if(listUserThrottler == null){
+        if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
         try {
@@ -41,7 +42,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void createChannel(Map<String, String> params, CreateChannelRequest data) {
-        if(createChannelThrottler == null){
+        if (createChannelThrottler == null) {
             createChannelThrottler = new Throttled();
         }
         try {
@@ -57,7 +58,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void getChannel(Map<String, String> params) {
-        if(getChannelThrottler == null){
+        if (getChannelThrottler == null) {
             getChannelThrottler = new Throttled();
         }
         try {
@@ -73,7 +74,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void updateChannel(Map<String, String> params, UpdateChannelRequest data) {
-        if(updateChannelThrottler == null){
+        if (updateChannelThrottler == null) {
             updateChannelThrottler = new Throttled();
         }
         try {
@@ -90,7 +91,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void deleteChannel(Map<String, String> params) {
-        if(deleteChannelThrottler == null){
+        if (deleteChannelThrottler == null) {
             deleteChannelThrottler = new Throttled();
         }
         try {
@@ -106,7 +107,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void listChannelMember(Map<String, String> params) {
-        if(listChannelMemberThrottler == null){
+        if (listChannelMemberThrottler == null) {
             listChannelMemberThrottler = new Throttled();
         }
         try {
@@ -125,7 +126,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void inviteChannelMembers(Map<String, String> params, InviteChannelMembersRequest data) {
-        if(inviteChannelMemberThrottler == null){
+        if (inviteChannelMemberThrottler == null) {
             inviteChannelMemberThrottler = new Throttled();
         }
         try {
@@ -142,14 +143,14 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void joinChannel(Map<String, String> params) {
-        if(joinChannelThrottler == null){
-            joinChannelThrottler.throttle();
+        if (joinChannelThrottler == null) {
+            joinChannelThrottler = new Throttled();
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s/members/me";
             url = String.format(url, params.get("channelId"));
             joinChannelThrottler.throttle();
-            String response = ApiClient.getApiClient().postRequest(url, params, null, null, null);
+            String response = ApiClient.getApiClient().postRequest(url, params, "", null, null);
             Map<String, String> responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
@@ -158,7 +159,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void leaveChannel(Map<String, String> params) {
-        if(leaveChannelThrottler == null){
+        if (leaveChannelThrottler == null) {
             leaveChannelThrottler = new Throttled();
         }
         try {
@@ -174,7 +175,7 @@ public class ChatChannelComponent extends BaseComponent {
     }
 
     public void removeMember(Map<String, String> params) {
-        if(removeMemberThrottler == null){
+        if (removeMemberThrottler == null) {
             removeMemberThrottler = new Throttled();
         }
         try {

@@ -3,16 +3,22 @@ package zoomapi;
 import utils.OAuthTokenFetcher;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class OAuthZoomClient extends ZoomClient {
 
 
     private HashMap<String, String> config;
     private HashMap<String, String> components;
+
     int timeout;
     String dataType;
+
+    public String getAccessToken() {
+        if (config != null && config.containsKey("token")) {
+            return config.get("token");
+        }
+        return null;
+    }
 
     public OAuthZoomClient(String client_id, String client_secret, String port, String redirect_url, String browser_path) {
 
@@ -38,6 +44,7 @@ public class OAuthZoomClient extends ZoomClient {
          */
 
     }
+
     //TODO check this
     @Override
     //Setting the refresh token
@@ -58,6 +65,7 @@ public class OAuthZoomClient extends ZoomClient {
         this.config.put("redirect_url", value);
         setRefreshToken();
     }
+
 
     /*
     TODO

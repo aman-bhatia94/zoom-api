@@ -3,7 +3,6 @@ package utils;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -11,18 +10,18 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
 
-import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Base64;
 
 public class OAuthTokenFetcher {
 
     static ServerSocket server;
     static String accessToken;
+
     public static String getOAuthToken(String client_id, String client_secret, String port, String redirect_url, String browser_path) {
 
         try {
@@ -35,10 +34,10 @@ public class OAuthTokenFetcher {
                     .buildQueryMessage();
 
             //Now we get the generated URL back from Zoom's authorization server with the authorization code
-            System.out.println("The generated URL is: \t"+request.getLocationUri());
-            try{
+            System.out.println("The generated URL is: \t" + request.getLocationUri());
+            try {
                 //System.out.println(browser_path);
-                String[] browserParams = {browser_path,request.getLocationUri()};
+                String[] browserParams = {browser_path, request.getLocationUri()};
                 Runtime.getRuntime().exec(browserParams);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,16 +56,14 @@ public class OAuthTokenFetcher {
                     .setCode(code)
                     .buildQueryMessage();
 
-            String encodeForHeader = Base64.getEncoder().encodeToString((client_id+":"+client_secret).getBytes());
-            clientRequest.setHeader("Authorization","Basic "+encodeForHeader);
+            String encodeForHeader = Base64.getEncoder().encodeToString((client_id + ":" + client_secret).getBytes());
+            clientRequest.setHeader("Authorization", "Basic " + encodeForHeader);
 
             OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
             OAuthResourceResponse resourceResponse = oAuthClient.resource(clientRequest, OAuth.HttpMethod.POST, OAuthResourceResponse.class);
             JSONObject jsonResponse = new JSONObject(resourceResponse.getBody());
             accessToken = jsonResponse.get("access_token").toString();
-            System.out.println("access_token"+accessToken);
-
-            //System.out.println(output);
+            System.out.println("access_token" + accessToken);
 
         } catch (OAuthSystemException | IOException | OAuthProblemException e) {
             e.printStackTrace();
@@ -75,7 +72,7 @@ public class OAuthTokenFetcher {
 
     }
 
-    public static String httpReceiver(String port){
+    public static String httpReceiver(String port) {
         String returnedString = null;
         try {
             Socket client = server.accept();

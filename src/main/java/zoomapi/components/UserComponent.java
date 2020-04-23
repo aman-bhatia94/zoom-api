@@ -22,27 +22,29 @@ public class UserComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public void getUser(Map<String, String> params) {
-        if(getUserThrottler == null){
+    public Map<String, String> getUser(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (getUserThrottler == null) {
             getUserThrottler = new Throttled();
         }
         try {
-            if (!params.containsKey("userId")) {
-                throw new Exception("userId was not found");
-            }
+//            if (!params.containsKey("userId")) {
+//                throw new Exception("userId was not found");
+//            }
             String url = ApiClient.getApiClient().getBaseUri() + "/users/%s";
             url = String.format(url, params.get("userId"));
             getUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
     public void createUser(Map<String, String> params, CreateUserRequest data) throws IOException, InterruptedException {
-        if(createUserThrottler == null){
+        if (createUserThrottler == null) {
             createUserThrottler = new Throttled();
         }
         String url = ApiClient.getApiClient().getBaseUri() + "/users";
@@ -53,7 +55,7 @@ public class UserComponent extends BaseComponent {
     }
 
     public void updateUser(Map<String, String> params, UpdateUserRequest data) throws IOException, InterruptedException {
-        if(updateUserThrottler == null){
+        if (updateUserThrottler == null) {
             updateUserThrottler = new Throttled();
         }
         String url = ApiClient.getApiClient().getBaseUri() + "/users/%s";
@@ -65,7 +67,7 @@ public class UserComponent extends BaseComponent {
     }
 
     public void listUsers(Map<String, String> params) {
-        if(listUserThrottler == null){
+        if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
         try {
@@ -87,7 +89,7 @@ public class UserComponent extends BaseComponent {
     }
 
     public void deleteUser(Map<String, String> params) {
-        if(deleteUserThrottler == null){
+        if (deleteUserThrottler == null) {
             deleteUserThrottler = new Throttled();
         }
         try {
