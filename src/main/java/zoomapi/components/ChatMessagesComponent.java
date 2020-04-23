@@ -26,6 +26,7 @@ public class ChatMessagesComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/%s/messages";
+            Utils.requireKeys(params, new String[]{"userId"}, false);
             url = String.format(url, params.get("userId"));
             url = Utils.appendToUrl(url, params);
             listUserThrottler.throttle();
@@ -45,6 +46,7 @@ public class ChatMessagesComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/%s/messages";
+            Utils.requireKeys(params, new String[]{"userId"}, false);
             url = String.format(url, params.get("userId"));
             String dataString = gson.toJson(data);
             sendChatThrottler.throttle();
@@ -64,6 +66,7 @@ public class ChatMessagesComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/me/messages/%s";
+            Utils.requireKeys(params, new String[]{"messageId"}, false);
             url = String.format(url, params.get("messageId"));
             String dataString = gson.toJson(data);
             updateMessageThrottler.throttle();
@@ -83,6 +86,7 @@ public class ChatMessagesComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/me/messages/%s";
+            Utils.requireKeys(params, new String[]{"messageId"}, false);
             url = String.format(url, params.get("messageId"));
             url = Utils.appendToUrl(url, params);
             deleteMessageThrottler.throttle();

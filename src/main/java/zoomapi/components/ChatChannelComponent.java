@@ -67,6 +67,7 @@ public class ChatChannelComponent extends BaseComponent {
             getChannelThrottler = new Throttled();
         }
         try {
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s";
             url = String.format(url, params.get("channelId"));
             getChannelThrottler.throttle();
@@ -86,6 +87,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s";
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             url = String.format(url, params.get("channelId"));
             String dataStr = gson.toJson(data);
             updateChannelThrottler.throttle();
@@ -105,6 +107,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s";
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             url = String.format(url, params.get("channelId"));
             deleteChannelThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
@@ -123,6 +126,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s/members";
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             if (!params.containsKey("page_size"))
                 params.put("page_size", "10");
             url = String.format(url, params.get("channelId"));
@@ -144,6 +148,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s/members";
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             url = String.format(url, params.get("channelId"));
             String dataStr = gson.toJson(data);
             inviteChannelMemberThrottler.throttle();
@@ -163,6 +168,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s/members/me";
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             url = String.format(url, params.get("channelId"));
             joinChannelThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, "", null, null);
@@ -181,6 +187,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s/members/me";
+            Utils.requireKeys(params, new String[]{"channelId"}, false);
             url = String.format(url, params.get("channelId"));
             leaveChannelThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
@@ -199,6 +206,7 @@ public class ChatChannelComponent extends BaseComponent {
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s/members/%s";
+            Utils.requireKeys(params, new String[]{"channelId", "memberId"}, false);
             url = String.format(url, params.get("channelId"), params.get("memberId"));
             removeMemberThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
