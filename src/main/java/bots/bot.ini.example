@@ -9,7 +9,7 @@ port = 4001
 ; browser_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 ; Use this for WSL or equivalent in Mac
 ;/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe
-browser_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+browser_path = /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 
 [JWT]
 api_key = YOUR_API_KEY
