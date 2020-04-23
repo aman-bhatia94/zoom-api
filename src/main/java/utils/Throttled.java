@@ -10,11 +10,11 @@ public class Throttled {
     public Throttled(){
         this.lastRequestedTime = System.currentTimeMillis();
         this.countConsecutiveRequest = 1;
-        this.interval = 500;
+        this.interval = 1000;
     }
 
     public void throttle(){
-        if(System.currentTimeMillis() - lastRequestedTime <= interval && countConsecutiveRequest >= 10){
+        if(System.currentTimeMillis() - lastRequestedTime <= interval && countConsecutiveRequest >= 8){
             try {
                 Thread.sleep(1000); // sleep for 1 second
                 countConsecutiveRequest = 1;

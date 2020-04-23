@@ -1,17 +1,24 @@
 package zoomapi.components;
 
 import utils.ApiClient;
+import utils.Throttled;
 import utils.Utils;
 
 import java.util.Map;
 
 public class RecordingComponent extends BaseComponent {
+    Throttled listThrottler = null;
+    Throttled getRecordingThrottler =null;
+    Throttled deleteMeetingRecordingThrottler = null;
 
     public RecordingComponent(String baseUri, String token) {
         super(baseUri, token);
     }
 
     public void listAllRecordings(Map<String, String> params) {
+        if(listThrottler == null){
+            listThrottler = new Throttled();
+        }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/users/%s/recordings";
             url = String.format(url, params.get("userId"));
@@ -22,6 +29,7 @@ public class RecordingComponent extends BaseComponent {
             if (!params.containsKey("trash_type"))
                 params.put("trash_type", "meeting_recordings");
             url = Utils.appendToUrl(url, params);
+            listThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             Map<String, String> responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
@@ -31,9 +39,13 @@ public class RecordingComponent extends BaseComponent {
     }
 
     public void getMeetingRecordings(Map<String, String> params) {
+        if(getRecordingThrottler == null){
+            getRecordingThrottler = new Throttled();
+        }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/meetings/%s/recordings";
             url = String.format(url, params.get("meetingId"));
+            getRecordingThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             Map<String, String> responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
@@ -43,10 +55,14 @@ public class RecordingComponent extends BaseComponent {
     }
 
     public void deleteMeetingRecordings(Map<String, String> params) {
+        if(deleteMeetingRecordingThrottler == null){
+            deleteMeetingRecordingThrottler = new Throttled();
+        }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/meetings/%s/recordings";
             url = String.format(url, params.get("meetingId"));
             url = Utils.appendToUrl(url, params);
+            deleteMeetingRecordingThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
             Map<String, String> responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
