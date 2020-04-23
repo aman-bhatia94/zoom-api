@@ -21,8 +21,9 @@ public class WebinarComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public void listWebinars(Map<String, String> params) {
-        if(listWebinarThrottler == null){
+    public Map<String, String> listWebinars(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (listWebinarThrottler == null) {
             listWebinarThrottler = new Throttled();
         }
         try {
@@ -35,15 +36,17 @@ public class WebinarComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listWebinarThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void createWebinar(Map<String, String> params, CreateWebinarRequest data) {
-        if(createWebinarThrottler == null){
+    public Map<String, String> createWebinar(Map<String, String> params, CreateWebinarRequest data) {
+        Map<String, String> responseMap = null;
+        if (createWebinarThrottler == null) {
             createWebinarThrottler = new Throttled();
         }
         try {
@@ -52,15 +55,17 @@ public class WebinarComponent extends BaseComponent {
             String dataStr = gson.toJson(data);
             createWebinarThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, dataStr, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void getWebinar(Map<String, String> params) {
-        if(getWebinarThrottler == null){
+    public Map<String, String> getWebinar(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (getWebinarThrottler == null) {
             getWebinarThrottler = new Throttled();
         }
         try {
@@ -69,15 +74,17 @@ public class WebinarComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             getWebinarThrottler = new Throttled();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void updateWebinar(Map<String, String> params, UpdateMeetingRequest data) {
-        if(updateWebinarThrottler == null){
+    public Map<String, String> updateWebinar(Map<String, String> params, UpdateMeetingRequest data) {
+        Map<String, String> responseMap = null;
+        if (updateWebinarThrottler == null) {
             updateWebinarThrottler = new Throttled();
         }
         try {
@@ -87,15 +94,17 @@ public class WebinarComponent extends BaseComponent {
             String dataStr = gson.toJson(data);
             updateWebinarThrottler.throttle();
             String response = ApiClient.getApiClient().patchRequest(url, params, dataStr, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void deleteWebinar(Map<String, String> params) {
-        if(deleteWebinarThrottler == null){
+    public Map<String, String> deleteWebinar(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (deleteWebinarThrottler == null) {
             deleteWebinarThrottler = new Throttled();
         }
         try {
@@ -104,15 +113,17 @@ public class WebinarComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             deleteWebinarThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void updateWebinarStatus(Map<String, String> params, UpdateWebinarStatus data) {
-        if(updateStatusThrottler == null){
+    public Map<String, String> updateWebinarStatus(Map<String, String> params, UpdateWebinarStatus data) {
+        Map<String, String> responseMap = null;
+        if (updateStatusThrottler == null) {
             updateStatusThrottler = new Throttled();
         }
         try {
@@ -121,11 +132,11 @@ public class WebinarComponent extends BaseComponent {
             String dataStr = gson.toJson(data);
             updateStatusThrottler.throttle();
             String response = ApiClient.getApiClient().putRequest(url, params, dataStr, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
-
 }

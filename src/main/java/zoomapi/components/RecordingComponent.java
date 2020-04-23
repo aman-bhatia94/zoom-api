@@ -8,15 +8,16 @@ import java.util.Map;
 
 public class RecordingComponent extends BaseComponent {
     Throttled listThrottler = null;
-    Throttled getRecordingThrottler =null;
+    Throttled getRecordingThrottler = null;
     Throttled deleteMeetingRecordingThrottler = null;
 
     public RecordingComponent(String baseUri, String token) {
         super(baseUri, token);
     }
 
-    public void listAllRecordings(Map<String, String> params) {
-        if(listThrottler == null){
+    public Map<String, String> listAllRecordings(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (listThrottler == null) {
             listThrottler = new Throttled();
         }
         try {
@@ -31,15 +32,17 @@ public class RecordingComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void getMeetingRecordings(Map<String, String> params) {
-        if(getRecordingThrottler == null){
+    public Map<String, String> getMeetingRecordings(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (getRecordingThrottler == null) {
             getRecordingThrottler = new Throttled();
         }
         try {
@@ -47,15 +50,17 @@ public class RecordingComponent extends BaseComponent {
             url = String.format(url, params.get("meetingId"));
             getRecordingThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void deleteMeetingRecordings(Map<String, String> params) {
-        if(deleteMeetingRecordingThrottler == null){
+    public Map<String, String> deleteMeetingRecordings(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (deleteMeetingRecordingThrottler == null) {
             deleteMeetingRecordingThrottler = new Throttled();
         }
         try {
@@ -64,12 +69,11 @@ public class RecordingComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             deleteMeetingRecordingThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
-
-
 }

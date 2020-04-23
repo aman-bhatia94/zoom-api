@@ -17,7 +17,6 @@ public class UserComponent extends BaseComponent {
     Throttled listUserThrottler = null;
     Throttled deleteUserThrottler = null;
 
-
     public UserComponent(String baseUri, String token) {
         super(baseUri, token);
     }
@@ -28,9 +27,9 @@ public class UserComponent extends BaseComponent {
             getUserThrottler = new Throttled();
         }
         try {
-//            if (!params.containsKey("userId")) {
-//                throw new Exception("userId was not found");
-//            }
+            if (!params.containsKey("userId")) {
+                throw new Exception("userId was not found");
+            }
             String url = ApiClient.getApiClient().getBaseUri() + "/users/%s";
             url = String.format(url, params.get("userId"));
             getUserThrottler.throttle();
@@ -43,7 +42,8 @@ public class UserComponent extends BaseComponent {
         return responseMap;
     }
 
-    public void createUser(Map<String, String> params, CreateUserRequest data) throws IOException, InterruptedException {
+    public Map<String, String> createUser(Map<String, String> params, CreateUserRequest data) throws IOException, InterruptedException {
+        Map<String, String> responseMap = null;
         if (createUserThrottler == null) {
             createUserThrottler = new Throttled();
         }
@@ -52,9 +52,12 @@ public class UserComponent extends BaseComponent {
         createUserThrottler.throttle();
         String response = ApiClient.getApiClient().postRequest(url, params, dataString, null, null);
         System.out.println("Response: " + response);
+        responseMap = gson.fromJson(response, Map.class);
+        return responseMap;
     }
 
-    public void updateUser(Map<String, String> params, UpdateUserRequest data) throws IOException, InterruptedException {
+    public Map<String, String> updateUser(Map<String, String> params, UpdateUserRequest data) throws IOException, InterruptedException {
+        Map<String, String> responseMap = null;
         if (updateUserThrottler == null) {
             updateUserThrottler = new Throttled();
         }
@@ -64,9 +67,12 @@ public class UserComponent extends BaseComponent {
         updateUserThrottler.throttle();
         String response = ApiClient.getApiClient().patchRequest(url, params, dataString, null, null);
         System.out.println("Response: " + response);
+        responseMap = gson.fromJson(response, Map.class);
+        return responseMap;
     }
 
-    public void listUsers(Map<String, String> params) {
+    public Map<String, String> listUsers(Map<String, String> params) {
+        Map<String, String> responseMap = null;
         if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
@@ -81,14 +87,16 @@ public class UserComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void deleteUser(Map<String, String> params) {
+    public Map<String, String> deleteUser(Map<String, String> params) {
+        Map<String, String> responseMap = null;
         if (deleteUserThrottler == null) {
             deleteUserThrottler = new Throttled();
         }
@@ -102,10 +110,11 @@ public class UserComponent extends BaseComponent {
                 params.put("action", "disassociate");
             deleteUserThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 }

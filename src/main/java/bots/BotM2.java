@@ -6,14 +6,12 @@ import xyz.dmanchon.ngrok.client.NgrokTunnel;
 import zoomapi.OAuthZoomClient;
 import zoomapi.components.ChatChannelComponent;
 import zoomapi.components.ChatMessagesComponent;
+import zoomapi.components.UserComponent;
 import zoomapi.components.componentRequestData.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BotM2 {
 
@@ -70,7 +68,7 @@ public class BotM2 {
 
     public static void main(String[] args) {
 
-
+        Scanner input = new Scanner(System.in);
         BotM2.parseBotIniFile("src/main/java/bots/bot.ini");
         BotM2.connect(); //creating ngrock tunnel
         BotM2.display();
@@ -80,100 +78,163 @@ public class BotM2 {
         final String baseURL = "https://api.zoom.us/v2";
         final String accessToken = client.getAccessToken();
 
-
-        //create channel
-        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        //get User details
+        UserComponent userComponent = new UserComponent(baseURL, accessToken);
         Map<String, String> params = new HashMap<>();
         params.put("userId", "me");
+        Map<String, String> getUserReponse = userComponent.getUser(params);
+        String email = getUserReponse.get("email");
+
+        //create channel
+        System.out.println("Create Channel");
+        System.out.println("Enter name: ");
+        String channelName = input.nextLine();
+        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        params = new HashMap<>();
+        params.put("userId", "me");
         Member member = new Member();
-        member.setEmail("vaishakhipilankar@gmail.com");
+        member.setEmail(email);
         List<Member> memberList = new ArrayList<>();
         memberList.add(member);
         CreateChannelRequest createChannelRequest = new CreateChannelRequest();
         createChannelRequest.setMembers(memberList);
-        createChannelRequest.setName("Test_04_22");
+        createChannelRequest.setName(channelName);
         createChannelRequest.setType(1);
-        chatChannelComponent.createChannel(params, createChannelRequest);
+        Map<String, String> createChannelResponse = chatChannelComponent.createChannel(params, createChannelRequest);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //update channel
+        System.out.println("Update Channel");
         params = new HashMap<>();
-        params.put("channelId", "c8fb7d4b-c83b-4e53-a516-6b313e845286");
+        String newChannelId = createChannelResponse.get("id");
+        params.put("channelId", newChannelId);
         UpdateChannelRequest updateChannelRequest = new UpdateChannelRequest();
-        updateChannelRequest.setName("updated_04_21");
+        System.out.println("Enter new channel name");
+        String newChannelName = input.next();
+        updateChannelRequest.setName(newChannelName);
         chatChannelComponent.updateChannel(params, updateChannelRequest);
 
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
+
         //list user channels
+        System.out.println("List User Channels");
         params = new HashMap<>();
         params.put("userId", "me");
+        System.out.println("Response: " + chatChannelComponent.listUserChannels(params));
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //get channel
+        String publicChannelId = "109ab13498c64fd5911a42be1076ea6b";
         params = new HashMap<>();
-        params.put("channelId", "c8fb7d4b-c83b-4e53-a516-6b313e845286");
-        chatChannelComponent.getChannel(params);
+        params.put("channelId", publicChannelId);
+        System.out.println("Response: " + chatChannelComponent.getChannel(params));
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //send chat message
         params = new HashMap<>();
         ChatMessagesComponent chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken);
         SendChatMessageRequest sendChatMessageRequest = new SendChatMessageRequest();
-        sendChatMessageRequest.setMessage("Send now");
-        sendChatMessageRequest.setTo_channel("240be840-4673-4211-8e99-53e3c9ad650c");
-        chatMessagesComponent.sendChatMessage(params, sendChatMessageRequest);
+        System.out.println("Enter Message: ");
+        String msg = input.next();
+        sendChatMessageRequest.setMessage(msg);
+        sendChatMessageRequest.setTo_channel(newChannelId);
+        Map<String, String> sendChatResponse = chatMessagesComponent.sendChatMessage(params, sendChatMessageRequest);
+        System.out.println("Response: " + sendChatResponse);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //lists the chat messages
         params = new HashMap<>();
         params.put("userId", "me");
-        params.put("to_channel", "240be840-4673-4211-8e99-53e3c9ad650c");
+        params.put("to_channel", newChannelId);
         chatMessagesComponent.listUserChatMessages(params);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //update message
         params = new HashMap<>();
-        params.put("messageId", "772f9d26-4728-4086-9b5a-e7eabc7f9408");
+        String msgId = sendChatResponse.get("id");
+        params.put("messageId", msgId);
         UpdateMessageRequest updateMessageRequest = new UpdateMessageRequest();
-        updateMessageRequest.setMessage("updated!!!!");
-        updateMessageRequest.setTo_channel("240be840-4673-4211-8e99-53e3c9ad650c");
+        System.out.println("Enter new msg: ");
+        String newMsg = input.next();
+        updateMessageRequest.setMessage(newMsg);
+        updateMessageRequest.setTo_channel(newChannelId);
         chatMessagesComponent.updateChatMessage(params, updateMessageRequest);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //delete message
         params = new HashMap<>();
-        params.put("to_channel", "240be840-4673-4211-8e99-53e3c9ad650c");
-        params.put("messageId", "772f9d26-4728-4086-9b5a-e7eabc7f9408");
+        params.put("to_channel", newChannelId);
+        params.put("messageId", msgId);
         chatMessagesComponent.deleteMessage(params);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //invite channel members
         params = new HashMap<>();
-        params.put("channelId", "b2c5df35-7f9a-42df-9b5d-793ad29ebdcb");
+        params.put("channelId", newChannelId);
         member = new Member();
-        member.setEmail("mnbhatia63@gmail.com");
+        System.out.println("Enter email: ");
+        String memberEmail = input.next();
+        member.setEmail(memberEmail);
         memberList = new ArrayList<>();
         memberList.add(member);
         InviteChannelMembersRequest data = new InviteChannelMembersRequest();
         data.setMembers(memberList);
         chatChannelComponent.inviteChannelMembers(params, data);
 
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
+
         //list channel members
         params = new HashMap<>();
-        params.put("channelId", "b2c5df35-7f9a-42df-9b5d-793ad29ebdcb");
-        chatChannelComponent.listChannelMember(params);
+        params.put("channelId", newChannelId);
+        Map<String, String> response = chatChannelComponent.listChannelMember(params);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //remove channel member
         params = new HashMap<>();
-        params.put("channelId", "b2c5df35-7f9a-42df-9b5d-793ad29ebdcb");
+        params.put("channelId", newChannelId);
         params.put("memberId", "fstkfao6qpwjcvtgqkrv9a");
         chatChannelComponent.removeMember(params);
 
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
+
         //join channel
         params = new HashMap<>();
-        params.put("channelId", "109ab13498c64fd5911a42be1076ea6b");
+        params.put("channelId", publicChannelId);
         chatChannelComponent.joinChannel(params);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //leave channel
         params = new HashMap<>();
-        params.put("channelId", "109ab13498c64fd5911a42be1076ea6b");
+        params.put("channelId", publicChannelId);
         chatChannelComponent.leaveChannel(params);
+
+        System.out.println("Press enter to continue: ");
+        input.nextLine();
 
         //delete channel
         params = new HashMap<>();
-        params.put("channelId", "958333e98d93482aaf0c1a080a8306ff");
+        params.put("channelId", newChannelId);
         chatChannelComponent.deleteChannel(params);
     }
 }

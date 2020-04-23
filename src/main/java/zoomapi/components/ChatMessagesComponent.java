@@ -19,8 +19,9 @@ public class ChatMessagesComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public void listUserChatMessages(Map<String, String> params) {
-        if(listUserThrottler == null){
+    public Map<String, String> listUserChatMessages(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
         try {
@@ -29,15 +30,17 @@ public class ChatMessagesComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {
-        if(sendChatThrottler == null){
+    public Map<String, String> sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {
+        Map<String, String> responseMap = null;
+        if (sendChatThrottler == null) {
             sendChatThrottler = new Throttled();
         }
         try {
@@ -46,15 +49,17 @@ public class ChatMessagesComponent extends BaseComponent {
             String dataString = gson.toJson(data);
             sendChatThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, dataString, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void updateChatMessage(Map<String, String> params, UpdateMessageRequest data) {
-        if(updateMessageThrottler == null){
+    public Map<String, String> updateChatMessage(Map<String, String> params, UpdateMessageRequest data) {
+        Map<String, String> responseMap = null;
+        if (updateMessageThrottler == null) {
             updateMessageThrottler = new Throttled();
         }
         try {
@@ -63,15 +68,17 @@ public class ChatMessagesComponent extends BaseComponent {
             String dataString = gson.toJson(data);
             updateMessageThrottler.throttle();
             String response = ApiClient.getApiClient().putRequest(url, params, dataString, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void deleteMessage(Map<String, String> params) {
-        if(deleteMessageThrottler == null){
+    public Map<String, String> deleteMessage(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (deleteMessageThrottler == null) {
             deleteMessageThrottler = new Throttled();
         }
         try {
@@ -80,10 +87,11 @@ public class ChatMessagesComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             deleteMessageThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 }

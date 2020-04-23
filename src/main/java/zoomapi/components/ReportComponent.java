@@ -15,8 +15,9 @@ public class ReportComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public void getMeetingReports(Map<String, String> params) {
-        if(getMeetingReportsThrottler == null){
+    public Map<String, String> getMeetingReports(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (getMeetingReportsThrottler == null) {
             getMeetingReportsThrottler = new Throttled();
         }
         try {
@@ -28,15 +29,17 @@ public class ReportComponent extends BaseComponent {
                 params.put("type", "past");
             getMeetingReportsThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
 
-    public void getActiveInactiveHostReports(Map<String, String> params) {
-        if(getInactiveHostReportsThrottler == null){
+    public Map<String, String> getActiveInactiveHostReports(Map<String, String> params) {
+        Map<String, String> responseMap = null;
+        if (getInactiveHostReportsThrottler == null) {
             getInactiveHostReportsThrottler = new Throttled();
         }
         try {
@@ -48,12 +51,12 @@ public class ReportComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             getInactiveHostReportsThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+        return responseMap;
     }
-
 
 }
