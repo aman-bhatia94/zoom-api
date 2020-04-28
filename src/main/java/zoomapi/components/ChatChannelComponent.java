@@ -6,6 +6,7 @@ import utils.Utils;
 import zoomapi.components.componentRequestData.CreateChannelRequest;
 import zoomapi.components.componentRequestData.InviteChannelMembersRequest;
 import zoomapi.components.componentRequestData.UpdateChannelRequest;
+import zoomapi.components.componentResponseData.ListUserChannelsResponse;
 
 import java.util.Map;
 
@@ -26,8 +27,8 @@ public class ChatChannelComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> listUserChannels(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public ListUserChannelsResponse listUserChannels(Map<String, String> params) {
+        ListUserChannelsResponse responseData = new ListUserChannelsResponse();
         if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
@@ -35,12 +36,12 @@ public class ChatChannelComponent extends BaseComponent {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/me/channels";
             listUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
+            responseData = gson.fromJson(response, ListUserChannelsResponse.class);
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> createChannel(Map<String, String> params, CreateChannelRequest data) {
