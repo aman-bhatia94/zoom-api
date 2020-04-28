@@ -5,6 +5,8 @@ import utils.Throttled;
 import utils.Utils;
 import zoomapi.components.componentRequestData.SendChatMessageRequest;
 import zoomapi.components.componentRequestData.UpdateMessageRequest;
+import zoomapi.components.componentResponseData.ListUserChannelsResponse;
+import zoomapi.components.componentResponseData.ListUserChatMessagesResponse;
 
 import java.util.Map;
 
@@ -19,8 +21,9 @@ public class ChatMessagesComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> listUserChatMessages(Map<String, String> params) {
+    public ListUserChatMessagesResponse listUserChatMessages(Map<String, String> params) {
         Map<String, String> responseMap = null;
+        ListUserChatMessagesResponse responseData = null;
         if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
@@ -31,12 +34,14 @@ public class ChatMessagesComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
             System.out.println("Response: " + response);
+            responseMap = gson.fromJson(response, Map.class);
+            responseData = gson.fromJson(response, ListUserChatMessagesResponse.class);
+
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {

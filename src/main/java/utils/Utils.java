@@ -4,30 +4,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
 
-
-    public static String trimByOne(String str) {
-        if (str.length() < 2)
-            return str;
-        return str.substring(1, str.length() - 1);
-    }
-
     public static boolean requireKeys(Map<String, String> d, String[] keys, boolean allowNull) {
-//        """Require that the object have the given keys
-//
-//    :param d: The dict the check
-//    :param keys: The keys to check :attr:`obj` for. This can either be a single
-//                 string, or an iterable of strings
-//
-//    :param allowNull: Whether ``Null`` values are allowed
-//    :raises:
-//        :ValueError: If any of the keys are missing from the obj
-
+        //Require that the object have the given keys
+        //param d: The dict the check
+        //param keys: The keys to check :attr:`obj` for. This can either be a single
+        //            string, or an iterable of strings
+        //param allowNull: Whether ``Null`` values are allowed
+        //returns: Returns false if any of the keys are missing from the obj else true
         try {
             for (String k : keys) {
                 if (!d.containsKey(k)) {
@@ -43,15 +33,11 @@ public class Utils {
         return true;
     }
 
-    String dateToString(Date d) {
-//        """Convert date and datetime objects to a string
-//
-//    Note, this does not do any timezone conversion.
-//
-//    :param d: The :class:`datetime.date` or :class:`datetime.datetime` to
-//              convert to a string
-//    :returns: The string representation of the date
-//    """
+    public static String dateToString(Date d) {
+        // Convert date and datetime objects to a string
+        // Note, this does not do any timezone conversion.
+        // param d: The :class:`datetime.date` or :class:`datetime.datetime` to convert to a string
+        // returns: The string representation of the date
         DateFormat dateFormat = new SimpleDateFormat("%Y-%m-%dT%H:%M:%SZ");
         return dateFormat.format(d);
     }
@@ -75,5 +61,22 @@ public class Utils {
 
         URI newUri = new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), builder.toString(), uri.getFragment());
         return newUri.toString();
+    }
+
+    public static String dateToString(LocalDate d) {
+
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        return dateFormat.format(d);
+        String str = d.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return str;
+    }
+
+    public static LocalDate stringToLocaleDate(String d) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(d, formatter);
+        return date;
+
+//        LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }
