@@ -82,7 +82,6 @@ public class OAuthTokenFetcher {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(returnedString);
         String[] tokens = returnedString.split("code=");
         String[] tempTokens2 = tokens[1].split(" ");
         String code = tempTokens2[0];

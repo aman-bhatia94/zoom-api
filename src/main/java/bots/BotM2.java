@@ -78,6 +78,7 @@ public class BotM2 {
         final String baseURL = "https://api.zoom.us/v2";
         final String accessToken = client.getAccessToken();
 
+        /*
         //get User details
         UserComponent userComponent = new UserComponent(baseURL, accessToken);
         Map<String, String> params = new HashMap<>();
@@ -239,5 +240,21 @@ public class BotM2 {
         params = new HashMap<>();
         params.put("channelId", newChannelId);
         System.out.println("Response: " + chatChannelComponent.deleteChannel(params));
+
+
+         */
+
+        //-----------------Milestone 3 testing------------------------------
+        //list user channels
+        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        System.out.println("List User Channels");
+        Map<String, String> params = new HashMap<>();
+        params = new HashMap<>();
+        params.put("userId", "me");
+        System.out.println("Response: " + chatChannelComponent.listUserChannels(params));
+
+        System.out.println("Press enter to continue: ");
+        input.next();
+
     }
 }
