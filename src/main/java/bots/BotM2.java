@@ -1,5 +1,6 @@
 package bots;
 
+import botfacing.BotHelper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.ini4j.Ini;
 import xyz.dmanchon.ngrok.client.NgrokTunnel;
@@ -79,6 +80,13 @@ public class BotM2 {
 
         final String baseURL = "https://api.zoom.us/v2";
         final String accessToken = client.getAccessToken();
+
+        BotHelper helper = new BotHelper(baseURL,accessToken,clientId,clientSecret,port,redirect_url,browserPath);
+        System.out.println("Enter the channel name where you want to send the message");
+        String channelName = input.nextLine();
+        System.out.println("Enter the message");
+        String messageToSend = input.nextLine();
+        helper.sendChatMessages(channelName,messageToSend);
 
         /*
         //get User details
@@ -246,20 +254,7 @@ public class BotM2 {
 
          */
 
-        //-----------------Milestone 3 testing------------------------------
-        //list user channels
-        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
-        System.out.println("List User Channels");
-        Map<String, String> params = new HashMap<>();
-        params = new HashMap<>();
-        params.put("userId", "me");
-        ListUserChannelsResponse response = chatChannelComponent.listUserChannels(params);
-        //System.out.println("Response: " + chatChannelComponent.listUserChannels(params));
-        List<ChannelData> channelData = response.getChannels();
 
-
-        System.out.println("Press enter to continue: ");
-        //input.nextLine();
 
     }
 }
