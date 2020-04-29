@@ -79,4 +79,11 @@ public class Utils {
 
 //        LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
+
+    public static String getErrorMessageFromResponse(Map<String, String> responseMap) {
+        if (responseMap.containsKey("code") && responseMap.containsKey("message")) {
+            return responseMap.get("code") + ": " + responseMap.get("message");
+        } else
+            return "Operation Failed";
+    }
 }

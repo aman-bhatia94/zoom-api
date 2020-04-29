@@ -13,4 +13,12 @@ public class ListUserChatMessagesResponse extends Response {
     public List<Message> getMessages() {
         return messages;
     }
+
+    @Override
+    public String toString() {
+        return "ListUserChatMessagesResponse{" +
+                "date='" + date + '\'' +
+                ", messages=" + messages +
+                '}';
+    }
 }

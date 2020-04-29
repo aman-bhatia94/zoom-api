@@ -29,6 +29,11 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message: " + getId() + "\n" + getSender() + "\n" + getMessage() + "\n";
+        return "Message{" +
+                "id='" + id + '\'' +
+                ", message='" + message + '\'' +
+                ", sender='" + sender + '\'' +
+                ", date_time='" + date_time + '\'' +
+                '}';
     }
 }

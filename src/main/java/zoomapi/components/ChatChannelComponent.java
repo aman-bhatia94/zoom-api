@@ -6,7 +6,7 @@ import utils.Utils;
 import zoomapi.components.componentRequestData.CreateChannelRequest;
 import zoomapi.components.componentRequestData.InviteChannelMembersRequest;
 import zoomapi.components.componentRequestData.UpdateChannelRequest;
-import zoomapi.components.componentResponseData.ListUserChannelsResponse;
+import zoomapi.components.componentResponseData.*;
 
 import java.util.Map;
 
@@ -36,16 +36,21 @@ public class ChatChannelComponent extends BaseComponent {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/users/me/channels";
             listUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseData = gson.fromJson(response, ListUserChannelsResponse.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, ListUserChannelsResponse.class);
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return responseData;
     }
 
-    public Map<String, String> createChannel(Map<String, String> params, CreateChannelRequest data) {
-        Map<String, String> responseMap = null;
+    public CreateChannelResponse createChannel(Map<String, String> params, CreateChannelRequest data) {
+        CreateChannelResponse responseData = null;
         if (createChannelThrottler == null) {
             createChannelThrottler = new Throttled();
         }
@@ -54,16 +59,21 @@ public class ChatChannelComponent extends BaseComponent {
             String dataStr = gson.toJson(data);
             createChannelThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, dataStr, null, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, CreateChannelResponse.class);
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> getChannel(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public GetChannelResponse getChannel(Map<String, String> params) {
+        GetChannelResponse responseData = null;
         if (getChannelThrottler == null) {
             getChannelThrottler = new Throttled();
         }
@@ -73,12 +83,17 @@ public class ChatChannelComponent extends BaseComponent {
             url = String.format(url, params.get("channelId"));
             getChannelThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, GetChannelResponse.class);
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> updateChannel(Map<String, String> params, UpdateChannelRequest data) {
@@ -94,7 +109,11 @@ public class ChatChannelComponent extends BaseComponent {
             updateChannelThrottler.throttle();
             String response = ApiClient.getApiClient().patchRequest(url, params, dataStr, null, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
@@ -113,15 +132,19 @@ public class ChatChannelComponent extends BaseComponent {
             deleteChannelThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return responseMap;
     }
 
-    public Map<String, String> listChannelMember(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public ListChannelMemberResponse listChannelMember(Map<String, String> params) {
+        ListChannelMemberResponse responseData = null;
         if (listChannelMemberThrottler == null) {
             listChannelMemberThrottler = new Throttled();
         }
@@ -134,16 +157,21 @@ public class ChatChannelComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listChannelMemberThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, ListChannelMemberResponse.class);
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> inviteChannelMembers(Map<String, String> params, InviteChannelMembersRequest data) {
-        Map<String, String> responseMap = null;
+    public InviteChannelMembersResponse inviteChannelMembers(Map<String, String> params, InviteChannelMembersRequest data) {
+        InviteChannelMembersResponse responseData = null;
         if (inviteChannelMemberThrottler == null) {
             inviteChannelMemberThrottler = new Throttled();
         }
@@ -154,16 +182,21 @@ public class ChatChannelComponent extends BaseComponent {
             String dataStr = gson.toJson(data);
             inviteChannelMemberThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, dataStr, null, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, InviteChannelMembersResponse.class);
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> joinChannel(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public JoinChannelResponse joinChannel(Map<String, String> params) {
+        JoinChannelResponse responseData = null;
         if (joinChannelThrottler == null) {
             joinChannelThrottler = new Throttled();
         }
@@ -173,12 +206,17 @@ public class ChatChannelComponent extends BaseComponent {
             url = String.format(url, params.get("channelId"));
             joinChannelThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, "", null, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, JoinChannelResponse.class);
+//                System.out.println("Response: " + response);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> leaveChannel(Map<String, String> params) {
@@ -193,7 +231,7 @@ public class ChatChannelComponent extends BaseComponent {
             leaveChannelThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+//            System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
@@ -212,7 +250,7 @@ public class ChatChannelComponent extends BaseComponent {
             removeMemberThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+//            System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }

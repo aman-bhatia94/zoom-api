@@ -16,4 +16,12 @@ public class ChannelData {
     public Integer getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "ChannelData{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

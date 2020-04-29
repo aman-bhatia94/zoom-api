@@ -9,4 +9,12 @@ public class ListUserChannelsResponse extends Response {
     public List<ChannelData> getChannels() {
         return channels;
     }
+
+    @Override
+    public String toString() {
+        return "ListUserChannelsResponse{" +
+                "channels=" + channels +
+                ", total_records=" + total_records +
+                '}';
+    }
 }

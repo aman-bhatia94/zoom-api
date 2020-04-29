@@ -5,6 +5,7 @@ import utils.Throttled;
 import utils.Utils;
 import zoomapi.components.componentRequestData.CreateUserRequest;
 import zoomapi.components.componentRequestData.UpdateUserRequest;
+import zoomapi.components.componentResponseData.GetUserResponse;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,8 +22,8 @@ public class UserComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> getUser(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public GetUserResponse getUser(Map<String, String> params) {
+        GetUserResponse responseData = null;
         if (getUserThrottler == null) {
             getUserThrottler = new Throttled();
         }
@@ -34,12 +35,19 @@ public class UserComponent extends BaseComponent {
             url = String.format(url, params.get("userId"));
             getUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map<String, String> responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, GetUserResponse.class);
+//                System.out.println("Response: " + response);
+            }
+//            if (responseMap.containsKey("code") && responseMap.get("code") != )
+//            System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> createUser(Map<String, String> params, CreateUserRequest data) throws IOException, InterruptedException {
