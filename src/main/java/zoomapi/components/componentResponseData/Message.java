@@ -26,4 +26,9 @@ public class Message {
     public String getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "Message: " + getId() + "\n" + getSender() + "\n" + getMessage() + "\n";
+    }
 }

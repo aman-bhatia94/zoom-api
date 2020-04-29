@@ -14,11 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class BotHelper {
 
-    private String baseURL;
-    private String accessToken;
+    private final String baseURL;
+    private final String accessToken;
     private String clientId;
     public String clientSecret;
     public String port;
@@ -35,7 +36,7 @@ public class BotHelper {
         this.redirect_url = redirect_url;
     }
 
-    public Map<String, String> sendChatMessages(String channelName, String message) {
+    public Map<String, String> sendMessages(String channelName, String message) {
 
         //list user channels
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
@@ -70,7 +71,7 @@ public class BotHelper {
         }
     }
 
-    public List<Message> getChatHistory(String channelName, LocalDate fromDate, LocalDate toDate) {
+    public List<Message> history(String channelName, LocalDate fromDate, LocalDate toDate) {
         List<Message> chatHistory = new ArrayList<>();
         try {
             ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
@@ -95,9 +96,16 @@ public class BotHelper {
                 String dateString = Utils.dateToString(date);
                 params.put("to_channel", channelData.getId());
                 params.put("date", dateString);
+                params.put("page_size", "10");
                 //todo page_size do for all pages
-                ListUserChatMessagesResponse listUserChatMessagesResponse = chatMessagesComponent.listUserChatMessages(params);
-                chatHistory.addAll(listUserChatMessagesResponse.getMessages());
+                String nextToken = "";
+                do {
+                    params.put("next_page_token", nextToken);
+                    ListUserChatMessagesResponse listUserChatMessagesResponse = chatMessagesComponent.listUserChatMessages(params);
+                    chatHistory.addAll(listUserChatMessagesResponse.getMessages());
+                    nextToken = listUserChatMessagesResponse.getNext_page_token();
+                } while (nextToken != null && nextToken.length() > 0);
+
             }
             System.out.println("All messages: " + chatHistory);
         } catch (Exception ex) {
@@ -106,5 +114,19 @@ public class BotHelper {
         return chatHistory;
     }
 
+    public List<Message> search(String channelName, LocalDate toDate, LocalDate fromDate, Predicate<Message> searchPredicate) {
+        List<Message> messageList = new ArrayList<>();
+        try {
+            List<Message> history = history(channelName, fromDate, toDate);
+            for (Message message : history) {
+                if (searchPredicate.test(message)) {
+                    messageList.add(message);
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        return messageList;
+    }
 
 }
