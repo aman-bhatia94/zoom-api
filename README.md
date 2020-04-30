@@ -1,8 +1,9 @@
 # zoom-api
 
-NOTE: Add the http://ngrok.io  url to whiteurl on zoom before testing the bot, dont add / after .io 
-NOTE: If you are using intellij and get errors on import statements, invalidate caches and restart your intellij environment
-NOTE: We have changed the throttling code. We took this decision because zoom had made their rate limits very strict. So we throttle between each request now, we request that you be patient as our bot might take a second or two to execute what you do. 
+### NOTE: Add the http://ngrok.io  url to whiteurl on zoom before testing the bot, dont add / after .io 
+### NOTE: If you are using intellij and get errors on import statements, invalidate caches and restart your intellij environment
+### NOTE: We have changed the throttling code. We took this decision because zoom had made their rate limits very strict. So we throttle between each request now, we request that you be patient as our bot might take a second or two to execute what you do. 
+### NOTE: If you feel the program is slow, you could try to change SLEEP_TIME in Throttled to make it fast.
 
 1. Extract your zip file
 2. Go into the extracted folder 
