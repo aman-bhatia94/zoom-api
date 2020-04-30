@@ -3,6 +3,9 @@ package zoomapi.components;
 import utils.ApiClient;
 import utils.Throttled;
 import utils.Utils;
+import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
+import zoomapi.components.componentResponseData.ReportComponentResponseData.GetMeetingReportResponse;
+import zoomapi.components.componentResponseData.WebinarResponseData.GetActiveInactiveHostReportResponse;
 
 import java.util.Map;
 
@@ -15,8 +18,9 @@ public class ReportComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> getMeetingReports(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public GetMeetingReportResponse getMeetingReports(Map<String, String> params) {
+        Map responseMap = null;
+        GetMeetingReportResponse responseData = new GetMeetingReportResponse();
         if (getMeetingReportsThrottler == null) {
             getMeetingReportsThrottler = new Throttled();
         }
@@ -30,15 +34,22 @@ public class ReportComponent extends BaseComponent {
             getMeetingReportsThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, GetMeetingReportResponse.class);
+//                System.out.println("Response: " + response);
+            }
+            //System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> getActiveInactiveHostReports(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public GetActiveInactiveHostReportResponse getActiveInactiveHostReports(Map<String, String> params) {
+        Map responseMap = null;
+        GetActiveInactiveHostReportResponse responseData = new GetActiveInactiveHostReportResponse();
         if (getInactiveHostReportsThrottler == null) {
             getInactiveHostReportsThrottler = new Throttled();
         }
@@ -52,11 +63,17 @@ public class ReportComponent extends BaseComponent {
             getInactiveHostReportsThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, GetActiveInactiveHostReportResponse.class);
+//                System.out.println("Response: " + response);
+            }
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
 }
