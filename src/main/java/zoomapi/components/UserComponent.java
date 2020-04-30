@@ -6,6 +6,8 @@ import utils.Utils;
 import zoomapi.components.componentRequestData.CreateUserRequest;
 import zoomapi.components.componentRequestData.UpdateUserRequest;
 import zoomapi.components.componentResponseData.GetUserResponse;
+import zoomapi.components.componentResponseData.UserResponseData.CreateUserResponse;
+import zoomapi.components.componentResponseData.UserResponseData.ListUsersResponse;
 
 import java.io.IOException;
 import java.util.Map;
@@ -50,8 +52,9 @@ public class UserComponent extends BaseComponent {
         return responseData;
     }
 
-    public Map<String, String> createUser(Map<String, String> params, CreateUserRequest data) throws IOException, InterruptedException {
-        Map<String, String> responseMap = null;
+    public CreateUserResponse createUser(Map<String, String> params, CreateUserRequest data) throws IOException, InterruptedException {
+        Map responseMap = null;
+        CreateUserResponse responseData = new CreateUserResponse();
         if (createUserThrottler == null) {
             createUserThrottler = new Throttled();
         }
@@ -61,7 +64,18 @@ public class UserComponent extends BaseComponent {
         String response = ApiClient.getApiClient().postRequest(url, params, dataString, null, null);
         System.out.println("Response: " + response);
         responseMap = gson.fromJson(response, Map.class);
-        return responseMap;
+
+        if (responseMap.containsKey("code")) {
+            try {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            responseData = gson.fromJson(response, CreateUserResponse.class);
+//                System.out.println("Response: " + response);
+        }
+        return responseData;
     }
 
     public Map<String, String> updateUser(Map<String, String> params, UpdateUserRequest data) throws IOException, InterruptedException {
@@ -79,8 +93,9 @@ public class UserComponent extends BaseComponent {
         return responseMap;
     }
 
-    public Map<String, String> listUsers(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public ListUsersResponse listUsers(Map<String, String> params) {
+        Map responseMap = null;
+        ListUsersResponse responseData = new ListUsersResponse();
         if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
         }
@@ -96,11 +111,17 @@ public class UserComponent extends BaseComponent {
             listUserThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, ListUsersResponse.class);
+//                System.out.println("Response: " + response);
+            }
+            //System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> deleteUser(Map<String, String> params) {
