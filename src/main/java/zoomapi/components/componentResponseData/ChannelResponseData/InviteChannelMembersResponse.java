@@ -1,4 +1,4 @@
-package zoomapi.components.componentResponseData;
+package zoomapi.components.componentResponseData.ChannelResponseData;
 
 public class InviteChannelMembersResponse {
     String ids;

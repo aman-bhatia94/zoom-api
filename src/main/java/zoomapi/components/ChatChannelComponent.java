@@ -1,12 +1,12 @@
 package zoomapi.components;
 
 import utils.ApiClient;
+import utils.StatusCodes;
 import utils.Throttled;
 import utils.Utils;
 import zoomapi.components.componentRequestData.CreateChannelRequest;
 import zoomapi.components.componentRequestData.InviteChannelMembersRequest;
 import zoomapi.components.componentRequestData.UpdateChannelRequest;
-import zoomapi.components.componentResponseData.*;
 import zoomapi.components.componentResponseData.ChannelResponseData.*;
 
 import java.util.Map;
@@ -42,7 +42,6 @@ public class ChatChannelComponent extends BaseComponent {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
                 responseData = gson.fromJson(response, ListUserChannelsResponse.class);
-//                System.out.println("Response: " + response);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -65,7 +64,6 @@ public class ChatChannelComponent extends BaseComponent {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
                 responseData = gson.fromJson(response, CreateChannelResponse.class);
-//                System.out.println("Response: " + response);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -89,7 +87,6 @@ public class ChatChannelComponent extends BaseComponent {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
                 responseData = gson.fromJson(response, GetChannelResponse.class);
-//                System.out.println("Response: " + response);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -97,32 +94,35 @@ public class ChatChannelComponent extends BaseComponent {
         return responseData;
     }
 
-    public Map updateChannel(Map<String, String> params, UpdateChannelRequest data) {
-        Map responseMap = null;
+    public int updateChannel(Map<String, String> params, UpdateChannelRequest data) {
+        int statusCode = -1;
         if (updateChannelThrottler == null) {
             updateChannelThrottler = new Throttled();
         }
         try {
             String url = ApiClient.getApiClient().getBaseUri() + "/chat/channels/%s";
             Utils.requireKeys(params, new String[]{"channelId"}, false);
+            if (data.getName() == null){
+                throw new Exception("parameter 'name' was not set");
+            }
             url = String.format(url, params.get("channelId"));
             String dataStr = gson.toJson(data);
             updateChannelThrottler.throttle();
             String response = ApiClient.getApiClient().patchRequest(url, params, dataStr, null, null);
-            responseMap = gson.fromJson(response, Map.class);
+            Map responseMap = gson.fromJson(response, Map.class);
             if (responseMap.containsKey("code")) {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
-//                System.out.println("Response: " + response);
+                statusCode = StatusCodes.CHANNEL_UPDATED;
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return statusCode;
     }
 
-    public Map deleteChannel(Map<String, String> params) {
-        Map responseMap = null;
+    public int deleteChannel(Map<String, String> params) {
+        int statusCode = -1;
         if (deleteChannelThrottler == null) {
             deleteChannelThrottler = new Throttled();
         }
@@ -132,16 +132,16 @@ public class ChatChannelComponent extends BaseComponent {
             url = String.format(url, params.get("channelId"));
             deleteChannelThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            responseMap = gson.fromJson(response, Map.class);
+            Map responseMap = gson.fromJson(response, Map.class);
             if (responseMap.containsKey("code")) {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
-//                System.out.println("Response: " + response);
+                statusCode = StatusCodes.CHANNEL_DELETED;
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return statusCode;
     }
 
     public ListChannelMemberResponse listChannelMember(Map<String, String> params) {
@@ -163,7 +163,6 @@ public class ChatChannelComponent extends BaseComponent {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
                 responseData = gson.fromJson(response, ListChannelMemberResponse.class);
-//                System.out.println("Response: " + response);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -188,7 +187,6 @@ public class ChatChannelComponent extends BaseComponent {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
                 responseData = gson.fromJson(response, InviteChannelMembersResponse.class);
-//                System.out.println("Response: " + response);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -212,7 +210,6 @@ public class ChatChannelComponent extends BaseComponent {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
                 responseData = gson.fromJson(response, JoinChannelResponse.class);
-//                System.out.println("Response: " + response);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -220,8 +217,8 @@ public class ChatChannelComponent extends BaseComponent {
         return responseData;
     }
 
-    public Map leaveChannel(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public int leaveChannel(Map<String, String> params) {
+        int statusCode = -1;
         if (leaveChannelThrottler == null) {
             leaveChannelThrottler = new Throttled();
         }
@@ -231,16 +228,20 @@ public class ChatChannelComponent extends BaseComponent {
             url = String.format(url, params.get("channelId"));
             leaveChannelThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            responseMap = gson.fromJson(response, Map.class);
-//            System.out.println("Response: " + response);
+            Map responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                statusCode = StatusCodes.LEFT_CHANNEL_SUCCESSFULLY;
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return statusCode;
     }
 
-    public Map removeMember(Map<String, String> params) {
-        Map responseMap = null;
+    public int removeMember(Map<String, String> params) {
+        int statusCode = -1;
         if (removeMemberThrottler == null) {
             removeMemberThrottler = new Throttled();
         }
@@ -250,12 +251,16 @@ public class ChatChannelComponent extends BaseComponent {
             url = String.format(url, params.get("channelId"), params.get("memberId"));
             removeMemberThrottler.throttle();
             String response = ApiClient.getApiClient().deleteRequest(url, params, null, null, null);
-            responseMap = gson.fromJson(response, Map.class);
-//            System.out.println("Response: " + response);
+            Map responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                statusCode = StatusCodes.MEMBER_REMOVED;
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return statusCode;
     }
 
 }

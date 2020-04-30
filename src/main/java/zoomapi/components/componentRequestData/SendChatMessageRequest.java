@@ -11,6 +11,10 @@ public class SendChatMessageRequest {
         to_contact = null;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }

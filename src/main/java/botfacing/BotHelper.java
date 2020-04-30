@@ -108,7 +108,7 @@ public class BotHelper {
                 } while (nextToken != null && nextToken.length() > 0);
 
             }
-            System.out.println("All messages: " + chatHistory);
+//            System.out.println("All messages: " + chatHistory);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
