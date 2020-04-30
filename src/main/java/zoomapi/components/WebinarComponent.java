@@ -6,6 +6,8 @@ import utils.Utils;
 import zoomapi.components.componentRequestData.CreateWebinarRequest;
 import zoomapi.components.componentRequestData.UpdateMeetingRequest;
 import zoomapi.components.componentRequestData.UpdateWebinarStatus;
+import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
+import zoomapi.components.componentResponseData.WebinarResponseData.ListWebinarsResponseData;
 
 import java.util.Map;
 
@@ -21,8 +23,9 @@ public class WebinarComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> listWebinars(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public ListWebinarsResponseData listWebinars(Map<String, String> params) {
+        ListWebinarsResponseData responseData = new ListWebinarsResponseData();
+        Map responseMap = null;
         if (listWebinarThrottler == null) {
             listWebinarThrottler = new Throttled();
         }
@@ -37,14 +40,20 @@ public class WebinarComponent extends BaseComponent {
             listWebinarThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, ListWebinarsResponseData.class);
+//                System.out.println("Response: " + response);
+            }
             System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> createWebinar(Map<String, String> params, CreateWebinarRequest data) {
+    public Map createWebinar(Map<String, String> params, CreateWebinarRequest data) {
         Map<String, String> responseMap = null;
         if (createWebinarThrottler == null) {
             createWebinarThrottler = new Throttled();

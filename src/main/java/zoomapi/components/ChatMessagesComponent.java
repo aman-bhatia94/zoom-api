@@ -5,6 +5,7 @@ import utils.Throttled;
 import utils.Utils;
 import zoomapi.components.componentRequestData.SendChatMessageRequest;
 import zoomapi.components.componentRequestData.UpdateMessageRequest;
+import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
 import zoomapi.components.componentResponseData.ListUserChannelsResponse;
 import zoomapi.components.componentResponseData.ListUserChatMessagesResponse;
 
@@ -22,7 +23,7 @@ public class ChatMessagesComponent extends BaseComponent {
     }
 
     public ListUserChatMessagesResponse listUserChatMessages(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+        Map responseMap = null;
         ListUserChatMessagesResponse responseData = null;
         if (listUserThrottler == null) {
             listUserThrottler = new Throttled();
@@ -44,8 +45,9 @@ public class ChatMessagesComponent extends BaseComponent {
         return responseData;
     }
 
-    public Map<String, String> sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {
-        Map<String, String> responseMap = null;
+    public SendChatMessageResponse sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {
+        Map responseMap = null;
+        SendChatMessageResponse responseData = new SendChatMessageResponse();
         if (sendChatThrottler == null) {
             sendChatThrottler = new Throttled();
         }
@@ -57,15 +59,21 @@ public class ChatMessagesComponent extends BaseComponent {
             sendChatThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, dataString, null, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, SendChatMessageResponse.class);
+//                System.out.println("Response: " + response);
+            }
+            //System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> updateChatMessage(Map<String, String> params, UpdateMessageRequest data) {
-        Map<String, String> responseMap = null;
+        Map responseMap = null;
         if (updateMessageThrottler == null) {
             updateMessageThrottler = new Throttled();
         }
@@ -85,7 +93,7 @@ public class ChatMessagesComponent extends BaseComponent {
     }
 
     public Map<String, String> deleteMessage(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+        Map responseMap = null;
         if (deleteMessageThrottler == null) {
             deleteMessageThrottler = new Throttled();
         }

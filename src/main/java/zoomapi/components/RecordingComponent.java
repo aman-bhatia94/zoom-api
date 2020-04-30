@@ -3,6 +3,8 @@ package zoomapi.components;
 import utils.ApiClient;
 import utils.Throttled;
 import utils.Utils;
+import zoomapi.components.componentResponseData.Meeting;
+import zoomapi.components.componentResponseData.RecordingComponentData.ListAllRecordingsResponse;
 
 import java.util.Map;
 
@@ -15,8 +17,9 @@ public class RecordingComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> listAllRecordings(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public ListAllRecordingsResponse listAllRecordings(Map<String, String> params) {
+        Map responseMap = null;
+        ListAllRecordingsResponse responseData = new ListAllRecordingsResponse();
         if (listThrottler == null) {
             listThrottler = new Throttled();
         }
@@ -33,15 +36,22 @@ public class RecordingComponent extends BaseComponent {
             listThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, ListAllRecordingsResponse.class);
+//                System.out.println("Response: " + response);
+            }
+            //System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> getMeetingRecordings(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public Meeting getMeetingRecordings(Map<String, String> params) {
+        Meeting responseData = new Meeting();
+        Map responseMap = null;
         if (getRecordingThrottler == null) {
             getRecordingThrottler = new Throttled();
         }
@@ -51,15 +61,21 @@ public class RecordingComponent extends BaseComponent {
             getRecordingThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
             responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, Meeting.class);
+//                System.out.println("Response: " + response);
+            }
+            //System.out.println("Response: " + response);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> deleteMeetingRecordings(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+        Map responseMap = null;
         if (deleteMeetingRecordingThrottler == null) {
             deleteMeetingRecordingThrottler = new Throttled();
         }
