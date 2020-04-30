@@ -5,6 +5,9 @@ import utils.Throttled;
 import utils.Utils;
 import zoomapi.components.componentRequestData.CreateMeetingRequest;
 import zoomapi.components.componentRequestData.UpdateMeetingRequest;
+import zoomapi.components.componentResponseData.MeetingResponseData.CreateMeetingResponse;
+import zoomapi.components.componentResponseData.MeetingResponseData.GetMeetingResponse;
+import zoomapi.components.componentResponseData.MeetingResponseData.ListMeetingsResponse;
 
 import java.util.Map;
 
@@ -19,8 +22,8 @@ public class MeetingComponent extends BaseComponent {
         super(baseUri, token);
     }
 
-    public Map<String, String> listMeetings(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public ListMeetingsResponse listMeetings(Map<String, String> params) {
+        ListMeetingsResponse responseData = null;
         if (listMeetingThrottler == null) {
             listMeetingThrottler = new Throttled();
         }
@@ -34,16 +37,20 @@ public class MeetingComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             listMeetingThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, ListMeetingsResponse.class);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> createMeeting(Map<String, String> params, CreateMeetingRequest data) {
-        Map<String, String> responseMap = null;
+    public CreateMeetingResponse createMeeting(Map<String, String> params, CreateMeetingRequest data) {
+        CreateMeetingResponse responseData = null;
         if (createMeetingThrottler == null) {
             createMeetingThrottler = new Throttled();
         }
@@ -53,16 +60,20 @@ public class MeetingComponent extends BaseComponent {
             String dataStr = gson.toJson(data);
             createMeetingThrottler.throttle();
             String response = ApiClient.getApiClient().postRequest(url, params, dataStr, null, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, CreateMeetingResponse.class);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
-    public Map<String, String> getMeeting(Map<String, String> params) {
-        Map<String, String> responseMap = null;
+    public GetMeetingResponse getMeeting(Map<String, String> params) {
+        GetMeetingResponse responseData = null;
         if (getListMeetingThrottler == null) {
             getListMeetingThrottler = new Throttled();
         }
@@ -72,12 +83,16 @@ public class MeetingComponent extends BaseComponent {
             url = Utils.appendToUrl(url, params);
             getListMeetingThrottler.throttle();
             String response = ApiClient.getApiClient().getRequest(url, params, null);
-            responseMap = gson.fromJson(response, Map.class);
-            System.out.println("Response: " + response);
+            Map responseMap = gson.fromJson(response, Map.class);
+            if (responseMap.containsKey("code")) {
+                throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
+            } else {
+                responseData = gson.fromJson(response, GetMeetingResponse.class);
+            }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        return responseMap;
+        return responseData;
     }
 
     public Map<String, String> updateMeeting(Map<String, String> params, UpdateMeetingRequest data) {

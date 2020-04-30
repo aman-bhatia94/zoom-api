@@ -5,8 +5,9 @@ import zoomapi.components.ChatChannelComponent;
 import zoomapi.components.ChatMessagesComponent;
 import zoomapi.components.componentRequestData.SendChatMessageRequest;
 import zoomapi.components.componentResponseData.ChannelData;
-import zoomapi.components.componentResponseData.ListUserChannelsResponse;
-import zoomapi.components.componentResponseData.ListUserChatMessagesResponse;
+import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChannelsResponse;
+import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChatMessagesResponse;
+import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
 import zoomapi.components.componentResponseData.Message;
 
 import java.time.LocalDate;
@@ -36,7 +37,7 @@ public class BotHelper {
         this.redirect_url = redirect_url;
     }
 
-    public Map<String, String> sendMessages(String channelName, String message) {
+    public SendChatMessageResponse sendMessages(String channelName, String message) {
 
         //list user channels
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
@@ -63,7 +64,7 @@ public class BotHelper {
             SendChatMessageRequest sendChatMessageRequest = new SendChatMessageRequest();
             sendChatMessageRequest.setMessage(message);
             sendChatMessageRequest.setTo_channel(channelData.getId());
-            Map<String, String> sendChatResponse = chatMessagesComponent.sendChatMessage(params, sendChatMessageRequest);
+            SendChatMessageResponse sendChatResponse = chatMessagesComponent.sendChatMessage(params, sendChatMessageRequest);
             return sendChatResponse;
         } else {
             //If nothing works

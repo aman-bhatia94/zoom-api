@@ -6,8 +6,7 @@ import utils.Utils;
 import zoomapi.components.componentRequestData.SendChatMessageRequest;
 import zoomapi.components.componentRequestData.UpdateMessageRequest;
 import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
-import zoomapi.components.componentResponseData.ListUserChannelsResponse;
-import zoomapi.components.componentResponseData.ListUserChatMessagesResponse;
+import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChatMessagesResponse;
 
 import java.util.Map;
 

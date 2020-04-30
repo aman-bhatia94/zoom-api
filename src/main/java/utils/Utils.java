@@ -80,8 +80,9 @@ public class Utils {
 //        LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
-    public static String getErrorMessageFromResponse(Map<String, String> responseMap) {
+    public static String getErrorMessageFromResponse(Map responseMap) {
         if (responseMap.containsKey("code") && responseMap.containsKey("message")) {
+//            Double code = (Double) responseMap.get("code");
             return responseMap.get("code") + ": " + responseMap.get("message");
         } else
             return "Operation Failed";
