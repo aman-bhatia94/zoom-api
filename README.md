@@ -1,6 +1,6 @@
 # zoom-api
 
-NOTE: Add the http://ngrok.io/  url to whiteurl on zoom before testing the bot 
+NOTE: Add the http://ngrok.io  url to whiteurl on zoom before testing the bot, dont add / after .io 
 NOTE: If you are using intellij and get errors on import statements, invalidate caches and restart your intellij environment
 
 1. Extract your zip file
