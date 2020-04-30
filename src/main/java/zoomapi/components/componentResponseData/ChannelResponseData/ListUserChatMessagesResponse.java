@@ -1,4 +1,7 @@
-package zoomapi.components.componentResponseData;
+package zoomapi.components.componentResponseData.ChannelResponseData;
+
+import zoomapi.components.componentResponseData.Message;
+import zoomapi.components.componentResponseData.Response;
 
 import java.util.List;
 

@@ -1,12 +1,10 @@
 package zoomapi.components.componentResponseData;
 
-import java.util.Arrays;
-
 public class InviteChannelMembersResponse {
-    String[] ids;
+    String ids;
     String added_at;
 
-    public String[] getIds() {
+    public String getIds() {
         return ids;
     }
 
@@ -17,7 +15,7 @@ public class InviteChannelMembersResponse {
     @Override
     public String toString() {
         return "InviteChannelMembersResponse{" +
-                "ids=" + Arrays.toString(ids) +
+                "ids=" + ids +
                 ", added_at='" + added_at + '\'' +
                 '}';
     }

@@ -9,11 +9,22 @@ public class Meeting {
     String account_id;
     String host_id;
     String topic;
+    Integer type;
     String start_time;
     Integer duration;
+    String timezone;
+    String created_at;
+    String join_url;
+    String agenda;
     String total_size;
     String recording_count;
+
+
     ArrayList<RecordingFiles> recording_files;
+
+    public Integer getType() {
+        return type;
+    }
 
     public String getUuid() {
         return uuid;
@@ -26,7 +37,6 @@ public class Meeting {
     public String getAccount_id() {
         return account_id;
     }
-
 
 
     public String getHost_id() {
@@ -55,6 +65,22 @@ public class Meeting {
 
     public ArrayList<RecordingFiles> getRecording_files() {
         return recording_files;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getJoin_url() {
+        return join_url;
+    }
+
+    public String getAgenda() {
+        return agenda;
     }
 
     @Override

@@ -1,4 +1,7 @@
-package zoomapi.components.componentResponseData;
+package zoomapi.components.componentResponseData.ChannelResponseData;
+
+import zoomapi.components.componentResponseData.ChannelData;
+import zoomapi.components.componentResponseData.Response;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ public class ListUserChannelsResponse extends Response {
     public String toString() {
         return "ListUserChannelsResponse{" +
                 "channels=" + channels +
-                ", total_records=" + total_records +
+                ", total_records=" + getTotal_records() +
                 '}';
     }
 }
