@@ -6,22 +6,11 @@ import java.util.HashMap;
 
 public class OAuthZoomClient extends ZoomClient {
 
-
-    private HashMap<String, String> config;
-    private HashMap<String, String> components;
-
+    private final HashMap<String, String> config;
     int timeout;
     String dataType;
 
-    public String getAccessToken() {
-        if (config != null && config.containsKey("token")) {
-            return config.get("token");
-        }
-        return null;
-    }
-
     public OAuthZoomClient(String client_id, String client_secret, String port, String redirect_url, String browser_path) {
-
         super(client_id, client_secret);
         this.config = new HashMap<>();
         this.config.put("client_id", client_id);
@@ -33,19 +22,15 @@ public class OAuthZoomClient extends ZoomClient {
         this.config.put("token", oAuthToken);
         this.dataType = "json";
         this.timeout = 15;
-
-
-        //TODO # Instantiate the components
-        //TODO check for annotations
-
-        this.components = new HashMap<>();
-        /**TODO
-         * implement components and create the hashmap here
-         */
-
     }
 
-    //TODO check this
+    public String getAccessToken() {
+        if (config != null && config.containsKey("token")) {
+            return config.get("token");
+        }
+        return null;
+    }
+
     @Override
     //Setting the refresh token
     public void setRefreshToken() {
@@ -65,10 +50,4 @@ public class OAuthZoomClient extends ZoomClient {
         this.config.put("redirect_url", value);
         setRefreshToken();
     }
-
-
-    /*
-    TODO
-    chat messages and chat channels methods
-     */
 }

@@ -21,7 +21,7 @@ public class BotHelper {
 
     private final String baseURL;
     private final String accessToken;
-    private String clientId;
+    private final String clientId;
     public String clientSecret;
     public String port;
     public String browserPath;
@@ -41,12 +41,9 @@ public class BotHelper {
 
         //list user channels
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
-        //System.out.println("List User Channels");
         Map<String, String> params = new HashMap<>();
-        params = new HashMap<>();
         params.put("userId", "me");
         ListUserChannelsResponse response = chatChannelComponent.listUserChannels(params);
-        //System.out.println("Response: " + chatChannelComponent.listUserChannels(params));
         List<ChannelData> channelDataList = response.getChannels();
 
         ChannelData channelData = null;
@@ -64,8 +61,7 @@ public class BotHelper {
             SendChatMessageRequest sendChatMessageRequest = new SendChatMessageRequest();
             sendChatMessageRequest.setMessage(message);
             sendChatMessageRequest.setTo_channel(channelData.getId());
-            SendChatMessageResponse sendChatResponse = chatMessagesComponent.sendChatMessage(params, sendChatMessageRequest);
-            return sendChatResponse;
+            return chatMessagesComponent.sendChatMessage(params, sendChatMessageRequest);
         } else {
             //If nothing works
             return null;
@@ -91,14 +87,11 @@ public class BotHelper {
             if (channelData == null) {
                 throw new Exception("The channel name was not found!");
             }
-            //todo please check if more than one channel with same name exists
-
             for (LocalDate date = fromDate; fromDate.equals(date); date = date.plusDays(1)) {
                 String dateString = Utils.dateToString(date);
                 params.put("to_channel", channelData.getId());
                 params.put("date", dateString);
                 params.put("page_size", "10");
-                //todo page_size do for all pages
                 String nextToken = "";
                 do {
                     params.put("next_page_token", nextToken);
@@ -108,7 +101,6 @@ public class BotHelper {
                 } while (nextToken != null && nextToken.length() > 0);
 
             }
-//            System.out.println("All messages: " + chatHistory);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }

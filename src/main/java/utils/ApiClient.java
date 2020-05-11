@@ -1,7 +1,5 @@
 package utils;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,21 +12,15 @@ import java.util.Map;
 //Ask a question for this design decision
 public class ApiClient {
 
-    private static ApiClient apiClient = null;
-    String baseUri;
-    int timeout;
-    //TODO check this please
-    String token;
-
-    //todo check if its needed
-    private static final Gson gson = new Gson();
+    private static ApiClient apiClient;
+    private final String token;
+    private String baseUri;
+    private int timeout;
 
     private ApiClient(String baseUri, String token) {
         this.baseUri = baseUri;
         this.timeout = 15;
         this.token = token;
-
-        //TODO kwargs
     }
 
     public static void init(String baseUri, String token) {
@@ -71,7 +63,7 @@ public class ApiClient {
         if (!endPoint.startsWith("/"))
             endPoint = String.format("/%s", endPoint);
         if (endPoint.endsWith("/"))
-            endPoint = endPoint.substring(0, -1);
+            endPoint = endPoint.substring(0, endPoint.length() - 1);
         return this.baseUri + endPoint;
     }
 
@@ -81,21 +73,12 @@ public class ApiClient {
     // :param headers: request headers
     // :return: The :class:``requests.Response`` object for this request
     public String getRequest(String endPoint, Map<String, String> params, Map<String, String> headers) throws IOException, InterruptedException {
-        if (headers == null) {
-            headers = new HashMap<>();
-            headers.put("Authorization", String.format("Bearer %s", token));
-        }
         HttpClient client = HttpClient.newHttpClient();
+        headers = getHeader(headers, false);
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(endPoint));
 
-        for (String key : headers.keySet()) {
-            builder.setHeader(key, headers.get(key));
-        }
-        HttpRequest request = builder.build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        return getResponse(headers, client, builder);
     }
 
     // Helper function for POST requests
@@ -106,26 +89,14 @@ public class ApiClient {
     // :param cookies: request cookies
     // :param cookies: request cookies
     // :return: The :class:``requests.Response`` object for this request
-
     public String postRequest(String endPoint, Map<String, String> params, String data,
                               Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
-
-        if (headers == null) {
-            headers = new HashMap<>();
-            headers.put("Authorization", String.format("Bearer %s", token));
-        }
-        headers.put("Content-type", "application/json");
-
         HttpClient client = HttpClient.newHttpClient();
+        headers = getHeader(headers, true);
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(endPoint))
                 .POST(HttpRequest.BodyPublishers.ofString(data));
-        for (String key : headers.keySet()) {
-            builder.setHeader(key, headers.get(key));
-        }
-        HttpRequest request = builder.build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        return getResponse(headers, client, builder);
     }
 
     // Helper function for PATCH requests
@@ -137,24 +108,12 @@ public class ApiClient {
     // :return: The :class:``requests.Response`` object for this request
     public String patchRequest(String endPoint, Map<String, String> params, String data,
                                Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
-
-        if (headers == null) {
-            headers = new HashMap<>();
-            headers.put("Authorization", String.format("Bearer %s", token));
-        }
-        headers.put("Content-type", "application/json");
         HttpClient client = HttpClient.newHttpClient();
+        headers = getHeader(headers, true);
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(endPoint))
                 .method("PATCH", HttpRequest.BodyPublishers.ofString(data));
-
-        for (String key : headers.keySet()) {
-            builder.setHeader(key, headers.get(key));
-        }
-        HttpRequest request = builder.build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        return getResponse(headers, client, builder);
     }
 
     // Helper function for DELETE requests
@@ -166,20 +125,11 @@ public class ApiClient {
     // :return: The :class:``requests.Response`` object for this request
     public String deleteRequest(String endPoint, Map<String, String> params, String data,
                                 Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
-        if (headers == null) {
-            headers = new HashMap<>();
-            headers.put("Authorization", String.format("Bearer %s", token));
-        }
-        headers.put("Content-type", "application/json");
         HttpClient client = HttpClient.newHttpClient();
+        headers = getHeader(headers, true);
         HttpRequest.Builder builder = HttpRequest.newBuilder().DELETE()
                 .uri(URI.create(endPoint));
-        for (String key : headers.keySet()) {
-            builder.setHeader(key, headers.get(key));
-        }
-        HttpRequest request = builder.build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        return getResponse(headers, client, builder);
     }
 
     // Helper function for PUT requests
@@ -191,42 +141,33 @@ public class ApiClient {
     // :return: The :class:``requests.Response`` object for this request
     public String putRequest(String endPoint, Map<String, String> params, String data,
                              Map<String, String> headers, Map<String, String> cookies) throws IOException, InterruptedException {
-        if (headers == null) {
-            headers = new HashMap<>();
-            headers.put("Authorization", String.format("Bearer %s", token));
-        }
-        headers.put("Content-type", "application/json");
         HttpClient client = HttpClient.newHttpClient();
+        headers = getHeader(headers, true);
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(data))
                 .uri(URI.create(endPoint));
+        return getResponse(headers, client, builder);
+    }
 
+
+    //private helper methods
+    private String getResponse(Map<String, String> headers, HttpClient client, HttpRequest.Builder builder) throws IOException, InterruptedException {
         for (String key : headers.keySet()) {
             builder.setHeader(key, headers.get(key));
         }
         HttpRequest request = builder.build();
-
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
 
-
-    //TODO endpoint,requests
-
-    public static boolean isJSONValid(String jsonInString) {
-        try {
-            gson.fromJson(jsonInString, Object.class);
-            return true;
-        } catch (com.google.gson.JsonSyntaxException ex) {
-            return false;
+    private Map<String, String> getHeader(Map<String, String> headers, boolean addDefaultContentType) {
+        if (headers == null) {
+            headers = new HashMap<>();
+            headers.put("Authorization", String.format("Bearer %s", token));
         }
-    }
-
-    private String getStringFromData(String data) {
-        if (isJSONValid(data)) {
-            gson.fromJson(data, Object.class);
-            data = gson.toString();
+        if (addDefaultContentType) {
+            headers.put("Content-type", "application/json");
         }
-        return data;
+        return headers;
     }
 }

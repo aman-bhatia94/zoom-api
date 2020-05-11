@@ -41,8 +41,6 @@ public class BotM2 {
             int portInteger = Integer.parseInt(port);
             tunnel = new NgrokTunnel(portInteger);
             redirect_url = tunnel.url();
-
-
         } catch (UnirestException e) {
             e.printStackTrace();
         }
@@ -51,9 +49,7 @@ public class BotM2 {
     public static void disconnect() {
         try {
             tunnel.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnirestException e) {
+        } catch (IOException | UnirestException e) {
             e.printStackTrace();
         }
     }
