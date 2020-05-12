@@ -2,6 +2,7 @@ package botfacing;
 
 import botfacing.botAsyncEvents.NewMemberAddedEvent;
 import botfacing.botAsyncEvents.NewMessageEvent;
+import botfacing.botAsyncEvents.UpdateMessageEvent;
 import utils.Utils;
 import zoomapi.components.ChatChannelComponent;
 import zoomapi.components.ChatMessagesComponent;
@@ -131,6 +132,13 @@ public class BotHelper implements BotEventListener {
         newMessageEvent.start();
     }
 
+    public void registerUpdateMessageEvent(String channelName){
+
+        UpdateMessageEvent updateMessageEvent = new UpdateMessageEvent();
+        updateMessageEvent.setEventListener(this,channelName,baseURL, accessToken);
+        updateMessageEvent.start();
+    }
+
     public void registerNewMemberAddedEvent() {
         NewMemberAddedEvent newMemberAddedEvent = new NewMemberAddedEvent();
         newMemberAddedEvent.setEventListener(this, baseURL, accessToken);
@@ -145,9 +153,18 @@ public class BotHelper implements BotEventListener {
     }
 
     @Override
+    public void onMessageUpdateEvent(Object[] arg) {
+
+        List<Message> updatedMessages = (ArrayList<Message>) arg[0];
+        System.out.println("Updated Messages" + updatedMessages);
+    }
+
+    @Override
     public void onNewChannelUserEvent(Object[] arg) {
         ChannelData channelData = (ChannelData) arg[0];
         List<Member> channelMembers = (ArrayList<Member>) arg[1];
         System.out.println("New Members in channel (" + channelData.getName() + "): " + channelMembers);
     }
+
+
 }

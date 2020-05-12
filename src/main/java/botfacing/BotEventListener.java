@@ -5,4 +5,6 @@ public interface BotEventListener {
 
     void onNewChannelUserEvent(Object[] arg);
 
+    void onMessageUpdateEvent(Object[] arg);
+
 }
