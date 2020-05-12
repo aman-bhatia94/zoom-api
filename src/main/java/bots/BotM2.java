@@ -101,13 +101,14 @@ public class BotM2 {
 //                message -> (message.getMessage().toLowerCase().contains(searchText.toLowerCase())));
 //        System.out.println("Search: " + result);
 
-        System.out.println("Enter the channel name: ");
-        String channelName = input.nextLine();
-        helper.registerNewMessageEvent(channelName);
+//        System.out.println("Enter the channel name: ");
+//        String channelName = input.nextLine();
+//        helper.registerNewMessageEvent(channelName);
 
 //      helper.registerNewMemberAddedEvent();
-
-//        helper.
+        System.out.println("Enter the channel name: ");
+        String channelName = input.nextLine();
+        helper.registerUpdateMessageEvent(channelName);
 
     }
 }

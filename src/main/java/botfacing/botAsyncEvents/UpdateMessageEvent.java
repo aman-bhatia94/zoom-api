@@ -18,12 +18,13 @@ import java.util.stream.Collectors;
 
 public class UpdateMessageEvent extends Thread {
 
+    HashMap<String, Message> messageHashMap;
     private BotEventListener listener;
     private String channelName;
     private String channelId;
     //creating a map of userchatmessage response, we will check timestamps in this list
     private LocalDateTime latestTimeStamp;
-    HashMap<String, Message> messageHashMap;
+    private String date;
     private ChatMessagesComponent chatMessagesComponent;
     private String baseURL;
     private String accessToken;
@@ -56,48 +57,49 @@ public class UpdateMessageEvent extends Thread {
     @Override
     public void run() {
 
-        while(true){
+        while (true) {
 
             if (latestTimeStamp == null) {
                 latestTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
             }
 
+            if (date == null) {
+                date = Utils.getTimeStampString(LocalDateTime.now(ZoneOffset.UTC));
+//                date = Utils.dateToString(LocalDate.now().plusDays(1));
+            }
 
             Map<String, String> params = new HashMap<>();
             params.put("userId", "me");
             params.put("to_channel", channelId);
-            params.put("date", Utils.getTimeStampString(latestTimeStamp));
-            params.put("page_size", "1");
+            params.put("date", date);
+            params.put("page_size", "50");
             ListUserChatMessagesResponse messagesResponse = chatMessagesComponent.listUserChatMessages(params);
             if (messagesResponse != null && messagesResponse.getMessages() != null && messagesResponse.getMessages().size() > 0) {
                 //first check if messae hashmap is already populated or not
-                if(messageHashMap == null){
+                if (messageHashMap == null) {
+                    messageHashMap = new HashMap<>();
                     //iterate over messages in messageResponse and add to the map
-                    for(Message message : messagesResponse.getMessages()){
-                        messageHashMap.put(message.getId(),message);
+                    for (Message message : messagesResponse.getMessages()) {
+                        messageHashMap.put(message.getId(), message);
                     }
                 }
                 //Now check if timestamps are different for stored messages
                 List<Message> updatedMessages = messagesResponse.getMessages().parallelStream().filter(obj -> {
-                    if(messageHashMap.containsKey(obj.getId())){
+                    if (messageHashMap.containsKey(obj.getId())) {
                         //we first see if our map record contains this data, if not we add
                         //but if it does, we will check if timestamp of the message is same or different
                         //if it is different, it means we have an updated message
                         Message previousMessage = messageHashMap.get(obj.getId());
-                        if(!previousMessage.getTimestamp().equals(obj.getTimestamp())){
-                            return true;
-                        }
-                        else{
-                            return false;
-                        }
-                    }
-                    else{
-                        messageHashMap.put(obj.getId(),obj);
+                        return !previousMessage.getMessage().equals(obj.getMessage());
+                    } else {
+                        messageHashMap.put(obj.getId(), obj);
                         return false;
                     }
                 }).collect(Collectors.toList());
                 if (listener != null && updatedMessages.size() > 0) {
-                    listener.onNewMessageEvent(new Object[]{updatedMessages});
+                    for (Message msg : updatedMessages) {
+                        listener.onMessageUpdateEvent(new Object[]{msg});
+                    }
                     //latestTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
                 }
                 //This thread sleeps for 10 seconds between every check
