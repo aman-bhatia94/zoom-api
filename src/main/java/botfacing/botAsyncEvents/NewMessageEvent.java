@@ -76,7 +76,9 @@ public class NewMessageEvent extends Thread {
                         return false;
                     }).collect(Collectors.toList());
                     if (listener != null && newMessages.size() > 0) {
-                        listener.onNewMessageEvent(new Object[]{messagesResponse.getMessages()});
+                        for (Message msg : newMessages) {
+                            listener.onNewMessageEvent(new Object[]{msg});
+                        }
                         latestTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
                     }
                 }

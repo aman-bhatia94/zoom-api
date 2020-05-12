@@ -132,10 +132,10 @@ public class BotHelper implements BotEventListener {
         newMessageEvent.start();
     }
 
-    public void registerUpdateMessageEvent(String channelName){
+    public void registerUpdateMessageEvent(String channelName) {
 
         UpdateMessageEvent updateMessageEvent = new UpdateMessageEvent();
-        updateMessageEvent.setEventListener(this,channelName,baseURL, accessToken);
+        updateMessageEvent.setEventListener(this, channelName, baseURL, accessToken);
         updateMessageEvent.start();
     }
 
@@ -148,22 +148,21 @@ public class BotHelper implements BotEventListener {
 
     @Override
     public void onNewMessageEvent(Object[] arg) {
-        List<Message> messageList = (ArrayList<Message>) arg[0];
-        System.out.println("New Messages: " + messageList);
+        Message message = (Message) arg[0];
+        System.out.println("New Messages: " + message);
     }
 
     @Override
     public void onMessageUpdateEvent(Object[] arg) {
-
-        List<Message> updatedMessages = (ArrayList<Message>) arg[0];
-        System.out.println("Updated Messages" + updatedMessages);
+        Message updatedMessage = (Message) arg[0];
+        System.out.println("Updated Messages" + updatedMessage);
     }
 
     @Override
     public void onNewChannelUserEvent(Object[] arg) {
         ChannelData channelData = (ChannelData) arg[0];
-        List<Member> channelMembers = (ArrayList<Member>) arg[1];
-        System.out.println("New Members in channel (" + channelData.getName() + "): " + channelMembers);
+        Member channelMember = (Member) arg[1];
+        System.out.println("New Member in channel (" + channelData.getName() + "): " + channelMember);
     }
 
 

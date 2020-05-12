@@ -74,7 +74,9 @@ public class NewMemberAddedEvent extends Thread {
                 if (newUserIds.size() > 0) {
                     newUsers = newUsers.stream().filter(obj -> newUserIds.contains(obj.getId())).collect(Collectors.toList());
                     oldUsers.addAll(newUsers);
-                    listener.onNewChannelUserEvent(new Object[]{channel, newUsers});
+                    for (Member eachUser : newUsers) {
+                        listener.onNewChannelUserEvent(new Object[]{channel, eachUser});
+                    }
                 }
             }
             try {

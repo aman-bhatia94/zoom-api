@@ -107,5 +107,7 @@ public class BotM2 {
 
 //      helper.registerNewMemberAddedEvent();
 
+//        helper.
+
     }
 }
