@@ -1,5 +1,7 @@
 package botfacing;
 
+import botfacing.botAsyncEvents.NewMemberAddedEvent;
+import botfacing.botAsyncEvents.NewMessageEvent;
 import utils.Utils;
 import zoomapi.components.ChatChannelComponent;
 import zoomapi.components.ChatMessagesComponent;
@@ -8,6 +10,7 @@ import zoomapi.components.componentResponseData.ChannelData;
 import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChannelsResponse;
 import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChatMessagesResponse;
 import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
+import zoomapi.components.componentResponseData.Member;
 import zoomapi.components.componentResponseData.Message;
 
 import java.time.LocalDate;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class BotHelper {
+public class BotHelper implements BotEventListener {
 
     private final String baseURL;
     private final String accessToken;
@@ -87,7 +90,7 @@ public class BotHelper {
             if (channelData == null) {
                 throw new Exception("The channel name was not found!");
             }
-            for (LocalDate date = fromDate; fromDate.equals(date); date = date.plusDays(1)) {
+            for (LocalDate date = fromDate; !toDate.equals(date); date = date.plusDays(1)) {
                 String dateString = Utils.dateToString(date);
                 params.put("to_channel", channelData.getId());
                 params.put("date", dateString);
@@ -122,4 +125,29 @@ public class BotHelper {
         return messageList;
     }
 
+    public void registerNewMessageEvent(String channelName) {
+        NewMessageEvent newMessageEvent = new NewMessageEvent();
+        newMessageEvent.setEventListener(this, channelName, baseURL, accessToken);
+        newMessageEvent.start();
+    }
+
+    public void registerNewMemberAddedEvent() {
+        NewMemberAddedEvent newMemberAddedEvent = new NewMemberAddedEvent();
+        newMemberAddedEvent.setEventListener(this, baseURL, accessToken);
+        newMemberAddedEvent.start();
+    }
+
+
+    @Override
+    public void onNewMessageEvent(Object[] arg) {
+        List<Message> messageList = (ArrayList<Message>) arg[0];
+        System.out.println("New Messages: " + messageList);
+    }
+
+    @Override
+    public void onNewChannelUserEvent(Object[] arg) {
+        ChannelData channelData = (ChannelData) arg[0];
+        List<Member> channelMembers = (ArrayList<Member>) arg[1];
+        System.out.println("New Members in channel (" + channelData.getName() + "): " + channelMembers);
+    }
 }

@@ -3,6 +3,7 @@ package utils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -54,5 +55,20 @@ public class Utils {
             return responseMap.get("code") + ": " + responseMap.get("message");
         } else
             return "Operation Failed";
+    }
+
+    public static String getTimeStampString(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+        formattedDateTime = formattedDateTime.replace(" ", "T");
+        formattedDateTime += "Z";
+        return formattedDateTime;
+    }
+
+    public static LocalDateTime getDateTime(String dateStr) {
+        dateStr = dateStr.replace("T", " ");
+        dateStr = dateStr.replace("Z", "");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(dateStr, formatter);
     }
 }
