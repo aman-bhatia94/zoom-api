@@ -1,7 +1,6 @@
 package zoomapi.components.componentResponseData.RecordingComponentData;
 
 import zoomapi.components.componentResponseData.Meeting;
-import zoomapi.components.componentResponseData.Response;
 
 import java.util.ArrayList;
 

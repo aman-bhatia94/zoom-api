@@ -74,17 +74,18 @@ public class OAuthTokenFetcher {
 
     public static String httpReceiver(String port) {
         String returnedString = null;
+        String code = null;
         try {
             Socket client = server.accept();
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             returnedString = input.readLine();
-
-        } catch (IOException e) {
+            assert returnedString != null;
+            String[] tokens = returnedString.split("code=");
+            String[] tempTokens2 = tokens[1].split(" ");
+            code = tempTokens2[0];
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        String[] tokens = returnedString.split("code=");
-        String[] tempTokens2 = tokens[1].split(" ");
-        String code = tempTokens2[0];
         return code;
     }
 }

@@ -23,7 +23,6 @@ public class UpdateMessageEvent extends Thread {
     private String channelName;
     private String channelId;
     //creating a map of userchatmessage response, we will check timestamps in this list
-    private LocalDateTime latestTimeStamp;
     private String date;
     private ChatMessagesComponent chatMessagesComponent;
     private String baseURL;
@@ -41,6 +40,7 @@ public class UpdateMessageEvent extends Thread {
     //sets the required channel
     private void init() {
         //list user channels
+        date = Utils.getTimeStampString(LocalDateTime.now(ZoneOffset.UTC));
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
         Map<String, String> params = new HashMap<>();
         params.put("userId", "me");
@@ -59,15 +59,6 @@ public class UpdateMessageEvent extends Thread {
 
         while (true) {
 
-            if (latestTimeStamp == null) {
-                latestTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-            }
-
-            if (date == null) {
-                date = Utils.getTimeStampString(LocalDateTime.now(ZoneOffset.UTC));
-//                date = Utils.dateToString(LocalDate.now().plusDays(1));
-            }
-
             Map<String, String> params = new HashMap<>();
             params.put("userId", "me");
             params.put("to_channel", channelId);
@@ -75,7 +66,7 @@ public class UpdateMessageEvent extends Thread {
             params.put("page_size", "50");
             ListUserChatMessagesResponse messagesResponse = chatMessagesComponent.listUserChatMessages(params);
             if (messagesResponse != null && messagesResponse.getMessages() != null && messagesResponse.getMessages().size() > 0) {
-                //first check if messae hashmap is already populated or not
+                //first check if message hashmap is already populated or not
                 if (messageHashMap == null) {
                     messageHashMap = new HashMap<>();
                     //iterate over messages in messageResponse and add to the map
@@ -100,7 +91,6 @@ public class UpdateMessageEvent extends Thread {
                     for (Message msg : updatedMessages) {
                         listener.onMessageUpdateEvent(new Object[]{msg});
                     }
-                    //latestTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
                 }
                 //This thread sleeps for 10 seconds between every check
                 try {
@@ -108,9 +98,7 @@ public class UpdateMessageEvent extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
-
         }
     }
 }
