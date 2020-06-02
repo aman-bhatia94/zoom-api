@@ -56,17 +56,6 @@ public class ApiClient {
         this.baseUri = value;
     }
 
-    // Get the URL for the given endpoint
-    // param endpoint: The endpoint
-    // return: The full URL for the endpoint
-    String urlFor(String endPoint) {
-        if (!endPoint.startsWith("/"))
-            endPoint = String.format("/%s", endPoint);
-        if (endPoint.endsWith("/"))
-            endPoint = endPoint.substring(0, endPoint.length() - 1);
-        return this.baseUri + endPoint;
-    }
-
     // Helper function for GET requests
     // :param endpoint: The endpoint
     // :param params: The URL parameters

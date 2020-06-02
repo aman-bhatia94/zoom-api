@@ -4,7 +4,7 @@ public class SendChatMessageResponse {
 
     String id;
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 

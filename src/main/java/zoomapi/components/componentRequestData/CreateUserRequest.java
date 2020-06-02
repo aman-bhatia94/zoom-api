@@ -1,7 +1,7 @@
 package zoomapi.components.componentRequestData;
 
 public class CreateUserRequest {
-    String action;
+    final String action;
     UserInfo user_info;
 
     public CreateUserRequest() {

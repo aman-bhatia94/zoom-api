@@ -71,43 +71,16 @@ public class BotM2 {
         final String accessToken = client.getAccessToken();
 
         BotHelper helper = new BotHelper(baseURL, accessToken, clientId, clientSecret, port, redirect_url, browserPath);
-//        System.out.println("---SEND MESSAGES---");
-//        System.out.println("Enter the channel name where you want to send the message");
-//        String channelName = input.nextLine();
-//        System.out.println("Enter the message");
-//        String messageToSend = input.nextLine();
-//        helper.sendMessages(channelName, messageToSend);
 
-//        System.out.println("---HISTORY---");
-//        System.out.println("Enter the channel name: ");
-//        channelName = input.nextLine();
-//        System.out.println("Enter start date in format yyyy-MM-dd: ");
-//        String fromDate = input.nextLine();
-//        System.out.println("Enter end date in format yyyy-MM-dd: ");
-//        String endDate = input.nextLine();
-//        List<Message> result = helper.history(channelName, Utils.stringToLocaleDate(fromDate), Utils.stringToLocaleDate(endDate));
-//        System.out.println("History: " + result);
-//
-//        System.out.println("---SEARCH---");
-//        System.out.println("Enter the channel name: ");
-//        channelName = input.nextLine();
-//        System.out.println("Enter start date in format yyyy-MM-dd: ");
-//        fromDate = input.nextLine();
-//        System.out.println("Enter end date in format yyyy-MM-dd: ");
-//        endDate = input.nextLine();
-//        System.out.println("Enter message to be searched: ");
-//        String searchText = input.nextLine();
-//        result = helper.search(channelName, Utils.stringToLocaleDate(fromDate), Utils.stringToLocaleDate(endDate),
-//                message -> (message.getMessage().toLowerCase().contains(searchText.toLowerCase())));
-//        System.out.println("Search: " + result);
-
-        System.out.println("Enter the channel name: ");
+        System.out.println("Enter the channel name for new message event: ");
         String channelName = input.nextLine();
+        System.out.println("---STARTING THE NEW MESSAGE EVENT IN THE BACKGROUND---");
         helper.registerNewMessageEvent(channelName);
-
-//      helper.registerNewMemberAddedEvent();
-
-//        helper.
-
+        System.out.println("---STARTING THE NEW MEMBER EVENT IN THE BACKGROUND---");
+        helper.registerNewMemberAddedEvent();
+        System.out.println("Enter the channel name for update message event: ");
+        channelName = input.nextLine();
+        System.out.println("---STARTING THE UPDATE MESSAGE EVENT IN THE BACKGROUND---");
+        helper.registerUpdateMessageEvent(channelName);
     }
 }

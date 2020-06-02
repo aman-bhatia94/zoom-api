@@ -7,8 +7,8 @@ import java.util.HashMap;
 public class OAuthZoomClient extends ZoomClient {
 
     private final HashMap<String, String> config;
-    int timeout;
-    String dataType;
+    final int timeout;
+    final String dataType;
 
     public OAuthZoomClient(String client_id, String client_secret, String port, String redirect_url, String browser_path) {
         super(client_id, client_secret);
