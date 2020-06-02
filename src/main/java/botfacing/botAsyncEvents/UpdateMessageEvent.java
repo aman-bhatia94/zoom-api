@@ -72,6 +72,7 @@ public class UpdateMessageEvent extends Thread {
             if (messagesResponse != null && messagesResponse.getMessages() != null && messagesResponse.getMessages().size() > 0) {
                 //first check if messae hashmap is already populated or not
                 if(messageHashMap == null){
+                    messageHashMap = new HashMap<>();
                     //iterate over messages in messageResponse and add to the map
                     for(Message message : messagesResponse.getMessages()){
                         messageHashMap.put(message.getId(),message);
@@ -97,6 +98,7 @@ public class UpdateMessageEvent extends Thread {
                     }
                 }).collect(Collectors.toList());
                 if (listener != null && updatedMessages.size() > 0) {
+
                     listener.onNewMessageEvent(new Object[]{updatedMessages});
                     //latestTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
                 }
