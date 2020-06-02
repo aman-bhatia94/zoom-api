@@ -6,7 +6,7 @@ public class ChannelMembership implements CreateTableInterface {
     public String create() {
         //this will generate the create table sql for this table
         String createTableSQL = "CREATE TABLE IF NOT EXISTS channel_membership (\n"
-                + "	id integer PRIMARY KEY AUTO INCREMENT,\n"
+                + "	id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                 + "	channel_id VARCHAR(200) NOT NULL,\n"
                 + " member_id  VARCHAR(200) NOT NULL,\n"
                 + " first_name VARCHAR(50) NOT NULL,\n"

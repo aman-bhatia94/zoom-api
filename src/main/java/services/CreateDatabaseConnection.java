@@ -8,7 +8,7 @@ public class CreateDatabaseConnection {
 
 
 
-    public static void connect(){
+    public static Connection connect(){
 
         Connection connection = null;
         String url = "jdbc:sqlite:/Users/amanbhatia/Documents/Coursework/Quarter3/Programming Styles/zoomapi/zoomdb.db";
@@ -18,12 +18,17 @@ public class CreateDatabaseConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        return connection;
+    }
+
+    public static void disconnect(Connection connection){
+        try {
+            connection.close();
+            System.out.println("Connection to the database is closed now");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+
+
 }
