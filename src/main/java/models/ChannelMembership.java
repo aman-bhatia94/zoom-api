@@ -2,6 +2,14 @@ package models;
 
 public class ChannelMembership implements CreateTableInterface {
 
+    int id;
+    String channel_id;
+    String member_id;
+    String first_name;
+    String last_name;
+    String email;
+    String role;
+
     @Override
     public String create() {
         //this will generate the create table sql for this table

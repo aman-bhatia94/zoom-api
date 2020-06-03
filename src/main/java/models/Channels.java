@@ -2,6 +2,10 @@ package models;
 
 public class Channels implements CreateTableInterface {
 
+    int id;
+    String channel_id;
+    String channel_name;
+    String channel_type;
 
     @Override
     public String create() {

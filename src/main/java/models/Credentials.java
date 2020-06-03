@@ -4,6 +4,10 @@ package models;
 public class Credentials implements CreateTableInterface {
 
 
+    int id;
+    String client_id;
+    String oauth_token;
+
     @Override
     public String create() {
         //this will generate the create table sql for this table

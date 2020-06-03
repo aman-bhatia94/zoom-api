@@ -27,6 +27,7 @@ public class CreateTableService {
             String sql = genericTableCreator.create(tables.get(i));
             try {
                 Statement statement = connection.createStatement();
+                System.out.println(sql);
                 statement.execute(sql);
             } catch (SQLException e) {
                 e.printStackTrace();
