@@ -1,13 +1,15 @@
 package services.data;
 
+import java.util.HashMap;
+
 public class DBRequestData {
     String tableName;
-    String[] fieldName;
-    String[] fieldValues;
+    HashMap<String, String> fieldValues;
+    HashMap<String, String> newFieldValues;
 
-    public DBRequestData(String tableName, String[] fieldName, String[] fieldValues) {
+    public DBRequestData(String tableName, HashMap<String, String> fieldValues, HashMap<String, String> newFieldValues) {
         this.tableName = tableName;
-        this.fieldName = fieldName;
         this.fieldValues = fieldValues;
+        this.newFieldValues = newFieldValues;
     }
 }
