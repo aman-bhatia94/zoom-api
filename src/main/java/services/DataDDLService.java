@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class CreateTableService {
+public class DataDDLService {
 
-    public void createAllTables(Connection connection){
+    public void createAllTables(Connection connection) {
 
         //Creating all tables
         Channels channels = new Channels();
@@ -36,8 +36,8 @@ public class CreateTableService {
     }
 
     public static void main(String[] args) {
-        CreateTableService c = new CreateTableService();
-        Connection conn = CreateDatabaseConnection.connect();
+        DataDDLService c = new DataDDLService();
+        Connection conn = DatabaseConnectionService.connect();
         c.createAllTables(conn);
     }
 

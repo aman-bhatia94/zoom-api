@@ -3,6 +3,7 @@ package botfacing;
 import botfacing.botAsyncEvents.NewMemberAddedEvent;
 import botfacing.botAsyncEvents.NewMessageEvent;
 import botfacing.botAsyncEvents.UpdateMessageEvent;
+import utils.DatabaseConnection;
 import utils.Utils;
 import zoomapi.components.ChatChannelComponent;
 import zoomapi.components.ChatMessagesComponent;
@@ -31,6 +32,7 @@ public class BotHelper implements BotEventListener {
     public String browserPath;
     public String redirect_url;
 
+
     public BotHelper(String baseURL, String accessToken, String clientId, String clientSecret, String port, String browserPath, String redirect_url) {
         this.baseURL = baseURL;
         this.accessToken = accessToken;
@@ -39,6 +41,9 @@ public class BotHelper implements BotEventListener {
         this.port = port;
         this.browserPath = browserPath;
         this.redirect_url = redirect_url;
+
+        DatabaseConnection.init();
+
     }
 
     public SendChatMessageResponse sendMessages(String channelName, String message) {
