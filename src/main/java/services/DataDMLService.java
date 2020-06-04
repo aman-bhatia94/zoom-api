@@ -8,12 +8,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-<<<<<<< HEAD
 import java.util.HashMap;
-=======
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> e217d3f787964982946ac2cfedfe7d3af391eeb7
+
 
 public class DataDMLService {
 
@@ -41,14 +39,10 @@ public class DataDMLService {
         }
         String finalSql = null;
         StringBuilder sql = new StringBuilder();
-<<<<<<< HEAD
+
         sql.append( "SELECT * FROM "+tableName);
         Field[] fields = queryObj.getClass().getDeclaredFields();
         if(queryObj != null){
-=======
-        sql.append("SELECT * FROM " + tableName);
-        if (queryObj != null) {
->>>>>>> e217d3f787964982946ac2cfedfe7d3af391eeb7
             sql.append(" WHERE ");
             for (Field field : fields) {
                 String fieldName = field.getName();
