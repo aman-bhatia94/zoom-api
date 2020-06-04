@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 public class DataDMLService {
 
@@ -17,7 +18,7 @@ public class DataDMLService {
         this.connection = connection;
     }
 
-    public <T> DBResponseData get(T requestData) throws IllegalAccessException {
+    public <T> HashMap<String, String> get(T requestData) throws IllegalAccessException {
         Class table = requestData.getClass();
 
         Field[] mainFields = table.getDeclaredFields();
@@ -36,9 +37,9 @@ public class DataDMLService {
         String finalSql = null;
         StringBuilder sql = new StringBuilder();
         sql.append( "SELECT * FROM "+tableName);
+        Field[] fields = queryObj.getClass().getDeclaredFields();
         if(queryObj != null){
             sql.append(" WHERE ");
-            Field[] fields = queryObj.getClass().getDeclaredFields();
             for (Field field : fields) {
                 String fieldName = field.getName();
                 Object val = field.get(queryObj);
@@ -56,21 +57,24 @@ public class DataDMLService {
             sql.append(";");
             finalSql = sql.toString();
         }
-
+        HashMap<String,String> dataToSend = new HashMap<>();
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(finalSql);
-
+            while(rs.next()){
+                for(Field field: fields){
+                    String fieldName = field.getName();
+                    if(fieldName.equalsIgnoreCase("id")){
+                        dataToSend.put("id",String.valueOf(rs.getInt("id")));
+                        continue;
+                    }
+                    dataToSend.put(fieldName,rs.getString(fieldName));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-        System.out.println("Query: " + queryObj);
-
-
-
-        return null;
+        return dataToSend;
     }
 
     public Object update(DBRequestData requestData) {
