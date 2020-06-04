@@ -1,6 +1,6 @@
 package models;
 
-public class Messages implements CreateTableInterface {
+public class Messages {
 
     String id;
     String message;
@@ -8,9 +8,4 @@ public class Messages implements CreateTableInterface {
     String date_time;
     String timestamp;
 
-    @Override
-    public String create() {
-        //TODO
-        return null;
-    }
 }
