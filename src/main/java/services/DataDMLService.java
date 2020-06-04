@@ -21,25 +21,21 @@ public class DataDMLService {
 
 
         Class table = requestData.getClass();
-        Class queryValues = null;
-        Class newValues = null;
+        Field queryValues = null;
+        Field newValues = null;
+        Field tableName = null;
         try {
-            Field[] fields = table.getFields();
-            for(Field field: fields){
-                String fieldName = field.getName();
-                Class type = field.getType();
-                String value = table.get
+            queryValues = table.getDeclaredField("queryValues");
+            newValues = table.getDeclaredField("newValues");
+            tableName = table.getDeclaredField("tableName");
 
-            }
-            queryValues = table.getField()
-            //queryValues = table.getDeclaredField("queryValues");
-            //newValues = table.getDeclaredField("newValues");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
 
+
         StringBuilder sql = new StringBuilder();
-        String tableName = table.getName().split("\\.")[1];
+
 
         sql.append("SELECT * FROM "+tableName+" ");
         if(queryValues == null){
@@ -47,7 +43,7 @@ public class DataDMLService {
             sql.append(";");
         }
         else{
-            Field[] fields =
+
         }
 
 

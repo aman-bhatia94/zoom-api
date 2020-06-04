@@ -6,7 +6,7 @@ public class CredentialsRequestData {
 
     Credentials queryValues;
     Credentials newValues;
-    final String tableName = "Credentials";
+    final String tableName = "credentials";
 
     public CredentialsRequestData(Credentials queryValues, Credentials newValues) {
         this.queryValues = queryValues;
