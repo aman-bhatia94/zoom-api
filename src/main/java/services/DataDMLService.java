@@ -1,13 +1,10 @@
 package services;
 
-import models.Credentials;
 import services.data.DBRequestData;
 import services.data.DBResponseData;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.util.HashMap;
 
 public class DataDMLService {
 
@@ -17,35 +14,31 @@ public class DataDMLService {
         this.connection = connection;
     }
 
-    public <T>  DBResponseData get(T requestData) {
-
-
+    public <T> DBResponseData get(T requestData) throws IllegalAccessException {
         Class table = requestData.getClass();
-        Field queryValues = null;
-        Field newValues = null;
-        Field tableName = null;
-        try {
-            queryValues = table.getDeclaredField("queryValues");
-            newValues = table.getDeclaredField("newValues");
-            tableName = table.getDeclaredField("tableName");
 
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+        Field[] mainFields = table.getDeclaredFields();
+        Object queryObj = null;
+        Object newValuesObj = null;
+        String tableName = null;
+        for (Field mainField : mainFields) {
+            if (mainField.getName().contains("queryValues")) {
+                queryObj = mainField.get(requestData);
+            } else if (mainField.getName().contains("newValues")) {
+                newValuesObj = mainField.get(requestData);
+            } else if (mainField.getName().contains("tableName")) {
+                tableName = mainField.get(requestData).toString();
+            }
         }
 
+        System.out.println("Query: " + queryObj);
 
-        StringBuilder sql = new StringBuilder();
-
-
-        sql.append("SELECT * FROM "+tableName+" ");
-        if(queryValues == null){
-            //This means we get all the data
-            sql.append(";");
+        Field[] fields = queryObj.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            Object val = field.get(queryObj);
+            System.out.println("Name: " + fieldName + "\nval: " + val.toString());
         }
-        else{
-
-        }
-
 
         return null;
     }
