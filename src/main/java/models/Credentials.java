@@ -4,7 +4,7 @@ package models;
 public class Credentials{
 
 
-    int id;
+    Integer id;
     String client_id;
     String oauth_token;
 

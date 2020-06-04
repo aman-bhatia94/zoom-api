@@ -17,7 +17,7 @@ public class DataDDLService {
         Credentials credentials = new Credentials();
         Messages messages = new Messages();
 
-        ArrayList<CreateTableInterface> tables = new ArrayList<>();
+        ArrayList<Object> tables = new ArrayList<>();
         tables.add(credentials);
         tables.add(channels);
         tables.add(channelMembership);

@@ -2,7 +2,7 @@ package models;
 
 public class ChannelMembership {
 
-    int id;
+    Integer id;
     String channel_id;
     String member_id;
     String first_name;
