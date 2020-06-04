@@ -2,6 +2,7 @@ package zoomapi.components;
 
 import com.google.gson.Gson;
 import utils.ApiClient;
+import utils.DatabaseConnection;
 import utils.Throttled;
 import utils.Utils;
 
@@ -12,8 +13,9 @@ public class BaseComponent {
     static final Gson GSON = new Gson();
     static final Throttled THROTTLED = new Throttled();
 
-    public BaseComponent(String baseUri, String token) {
+    public BaseComponent(String baseUri, String token, String clientId) throws Exception {
         ApiClient.init(baseUri, token);
+        DatabaseConnection.init(clientId, token);
     }
 
     public static String getUrl(String baseUrl, String apiUrl, Map<String, String> params, String[] urlParams,

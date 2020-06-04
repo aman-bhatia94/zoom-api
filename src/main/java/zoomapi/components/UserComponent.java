@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class UserComponent extends BaseComponent {
 
-    public UserComponent(String baseUri, String token) {
-        super(baseUri, token);
+    public UserComponent(String baseUri, String token, String clientId) throws Exception {
+        super(baseUri, token, clientId);
     }
 
     public GetUserResponse getUser(Map<String, String> params) {

@@ -27,21 +27,23 @@ public class UpdateMessageEvent extends Thread {
     private ChatMessagesComponent chatMessagesComponent;
     private String baseURL;
     private String accessToken;
+    private String clientId;
 
-    public void setEventListener(BotEventListener listener, String channelName, String baseURL, String accessToken) {
+    public void setEventListener(BotEventListener listener, String channelName, String baseURL, String accessToken, String clientId) throws Exception {
         this.listener = listener;
         this.channelName = channelName;
-        this.chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken);
+        this.chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken, clientId);
         this.baseURL = baseURL;
         this.accessToken = accessToken;
+        this.clientId = clientId;
         init();
     }
 
     //sets the required channel
-    private void init() {
+    private void init() throws Exception {
         //list user channels
         date = Utils.getTimeStampString(LocalDateTime.now(ZoneOffset.UTC));
-        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
         Map<String, String> params = new HashMap<>();
         params.put("userId", "me");
         ListUserChannelsResponse response = chatChannelComponent.listUserChannels(params);
@@ -67,7 +69,7 @@ public class UpdateMessageEvent extends Thread {
             ListUserChatMessagesResponse messagesResponse = chatMessagesComponent.listUserChatMessages(params);
             if (messagesResponse != null && messagesResponse.getMessages() != null && messagesResponse.getMessages().size() > 0) {
                 //first check if messae hashmap is already populated or not
-                if(messageHashMap == null){
+                if (messageHashMap == null) {
                     messageHashMap = new HashMap<>();
                     //iterate over messages in messageResponse and add to the map
                     for (Message message : messagesResponse.getMessages()) {

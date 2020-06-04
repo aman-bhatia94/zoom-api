@@ -3,7 +3,6 @@ package botfacing;
 import botfacing.botAsyncEvents.NewMemberAddedEvent;
 import botfacing.botAsyncEvents.NewMessageEvent;
 import botfacing.botAsyncEvents.UpdateMessageEvent;
-import utils.DatabaseConnection;
 import utils.Utils;
 import zoomapi.components.ChatChannelComponent;
 import zoomapi.components.ChatMessagesComponent;
@@ -41,15 +40,12 @@ public class BotHelper implements BotEventListener {
         this.port = port;
         this.browserPath = browserPath;
         this.redirect_url = redirect_url;
-
-        DatabaseConnection.init();
-
     }
 
-    public SendChatMessageResponse sendMessages(String channelName, String message) {
+    public SendChatMessageResponse sendMessages(String channelName, String message) throws Exception {
 
         //list user channels
-        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
         Map<String, String> params = new HashMap<>();
         params.put("userId", "me");
         ListUserChannelsResponse response = chatChannelComponent.listUserChannels(params);
@@ -66,7 +62,7 @@ public class BotHelper implements BotEventListener {
 
         if (channelData != null) {
             //send chat message
-            ChatMessagesComponent chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken);
+            ChatMessagesComponent chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken, clientId);
             SendChatMessageRequest sendChatMessageRequest = new SendChatMessageRequest();
             sendChatMessageRequest.setMessage(message);
             sendChatMessageRequest.setTo_channel(channelData.getId());
@@ -80,8 +76,8 @@ public class BotHelper implements BotEventListener {
     public List<Message> history(String channelName, LocalDate fromDate, LocalDate toDate) {
         List<Message> chatHistory = new ArrayList<>();
         try {
-            ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
-            ChatMessagesComponent chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken);
+            ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
+            ChatMessagesComponent chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken, clientId);
             Map<String, String> params = new HashMap<>();
             params.put("userId", "me");
             ListUserChannelsResponse response = chatChannelComponent.listUserChannels(params);
@@ -131,22 +127,22 @@ public class BotHelper implements BotEventListener {
         return messageList;
     }
 
-    public void registerNewMessageEvent(String channelName) {
+    public void registerNewMessageEvent(String channelName) throws Exception {
         NewMessageEvent newMessageEvent = new NewMessageEvent();
-        newMessageEvent.setEventListener(this, channelName, baseURL, accessToken);
+        newMessageEvent.setEventListener(this, channelName, baseURL, accessToken, clientId);
         newMessageEvent.start();
     }
 
-    public void registerUpdateMessageEvent(String channelName) {
+    public void registerUpdateMessageEvent(String channelName) throws Exception {
 
         UpdateMessageEvent updateMessageEvent = new UpdateMessageEvent();
-        updateMessageEvent.setEventListener(this, channelName, baseURL, accessToken);
+        updateMessageEvent.setEventListener(this, channelName, baseURL, accessToken, clientId);
         updateMessageEvent.start();
     }
 
-    public void registerNewMemberAddedEvent() {
+    public void registerNewMemberAddedEvent() throws Exception {
         NewMemberAddedEvent newMemberAddedEvent = new NewMemberAddedEvent();
-        newMemberAddedEvent.setEventListener(this, baseURL, accessToken);
+        newMemberAddedEvent.setEventListener(this, baseURL, accessToken, clientId);
         newMemberAddedEvent.start();
     }
 

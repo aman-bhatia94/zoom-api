@@ -1,16 +1,13 @@
 package services;
 
 import org.json.JSONArray;
-import services.data.DBRequestData;
 import services.data.DBResponseData;
 import utils.Utils;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,18 +20,14 @@ public class DataDMLService {
         this.connection = connection;
     }
 
-    public <T> DBResponseData get(T requestData) throws IllegalAccessException {
+    public <T> DBResponseData get(T requestData) throws Exception {
         Class table = requestData.getClass();
-
         Field[] mainFields = table.getDeclaredFields();
         Object queryObj = null;
-        Object newValuesObj = null;
         String tableName = null;
         for (Field mainField : mainFields) {
             if (mainField.getName().contains("queryValues")) {
                 queryObj = mainField.get(requestData);
-            } else if (mainField.getName().contains("newValues")) {
-                newValuesObj = mainField.get(requestData);
             } else if (mainField.getName().contains("tableName")) {
                 tableName = mainField.get(requestData).toString();
             }
@@ -42,9 +35,9 @@ public class DataDMLService {
         String finalSql = null;
         StringBuilder sql = new StringBuilder();
 
-        sql.append( "SELECT * FROM "+tableName);
+        sql.append("SELECT * FROM " + tableName);
         Field[] fields = queryObj.getClass().getDeclaredFields();
-        if(queryObj != null){
+        if (queryObj != null) {
             sql.append(" WHERE ");
             for (Field field : fields) {
                 String fieldName = field.getName();
@@ -62,24 +55,14 @@ public class DataDMLService {
             sql.append(";");
             finalSql = sql.toString();
         }
-        DBResponseData dbResponseData = null;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(finalSql);
-            JSONArray jsonArray = Utils.convertToJSON(rs);
-            dbResponseData = new DBResponseData(200,"success",jsonArray.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return dbResponseData;
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(finalSql);
+        JSONArray jsonArray = Utils.convertToJSON(rs);
+        return new DBResponseData(200, "success", jsonArray.toString());
     }
 
-    public <T> DBResponseData insert(T requestData) throws IllegalAccessException {
+    public <T> DBResponseData insert(T requestData) throws Exception {
         Class table = requestData.getClass();
-
         Field[] mainFields = table.getDeclaredFields();
         Object queryObj = null;
         String tableName = null;
@@ -106,20 +89,14 @@ public class DataDMLService {
         sql.append("values (default, ");
         sql.append(String.join(",", values));
         sql.append(")");
-        ResultSet rs = null;
-        try {
-            Statement statement = connection.createStatement();
-            rs = statement.executeQuery(sql.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new DBResponseData(0, null, rs);
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(sql.toString());
+        String response = Utils.convertToJSON(rs).toString();
+        return new DBResponseData(0, null, response);
     }
 
-    public <T> DBResponseData delete(T requestData) throws IllegalAccessException {
-
+    public <T> DBResponseData delete(T requestData) throws Exception {
         Class table = requestData.getClass();
-
         Field[] mainFields = table.getDeclaredFields();
         Object queryObj = null;
         Object newValuesObj = null;
@@ -136,9 +113,9 @@ public class DataDMLService {
         String finalSql = null;
         StringBuilder sql = new StringBuilder();
 
-        sql.append( "DELETE FROM "+tableName);
+        sql.append("DELETE FROM " + tableName);
         Field[] fields = queryObj.getClass().getDeclaredFields();
-        if(queryObj != null){
+        if (queryObj != null) {
             sql.append(" WHERE ");
             for (Field field : fields) {
                 String fieldName = field.getName();
@@ -156,19 +133,57 @@ public class DataDMLService {
             sql.append(";");
             finalSql = sql.toString();
         }
-        DBResponseData dbResponseData = null;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(finalSql);
-            JSONArray jsonArray = Utils.convertToJSON(rs);
-            dbResponseData = new DBResponseData(200,"success",jsonArray.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(finalSql);
+        JSONArray jsonArray = Utils.convertToJSON(rs);
+        return new DBResponseData(200, "success", jsonArray.toString());
+    }
+
+    public <T> DBResponseData update(T requestData) throws Exception {
+        Class table = requestData.getClass();
+        Field[] mainFields = table.getDeclaredFields();
+        Object queryObj = null;
+        Object newValuesObj = null;
+        String tableName = null;
+        for (Field mainField : mainFields) {
+            if (mainField.getName().contains("queryValues")) {
+                queryObj = mainField.get(requestData);
+            } else if (mainField.getName().contains("newValues")) {
+                newValuesObj = mainField.get(requestData);
+            } else if (mainField.getName().contains("tableName")) {
+                tableName = mainField.get(requestData).toString();
+            }
+        }
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("UDATE " + tableName + " SET ");
+
+        if (newValuesObj != null) {
+            Field[] fields = newValuesObj.getClass().getDeclaredFields();
+            List<String> condition = new ArrayList<>();
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                Object val = field.get(queryObj);
+                condition.add(fieldName + " = " + val);
+            }
+            sql.append(String.join(",", condition));
         }
 
-        return dbResponseData;
+        if (queryObj != null) {
+            sql.append("WHERE ");
+            List<String> condition = new ArrayList<>();
+            Field[] fields = queryObj.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                Object val = field.get(queryObj);
+                condition.add(fieldName + " = " + val);
+            }
+        }
 
+        sql.append(";");
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(sql.toString());
+        JSONArray jsonArray = Utils.convertToJSON(rs);
+        return new DBResponseData(200, "success", jsonArray.toString());
     }
 }

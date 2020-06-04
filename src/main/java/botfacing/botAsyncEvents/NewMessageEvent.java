@@ -25,19 +25,21 @@ public class NewMessageEvent extends Thread {
     private ChatMessagesComponent chatMessagesComponent;
     private String baseURL;
     private String accessToken;
+    private String clientId;
 
-    public void setEventListener(BotEventListener listener, String channelName, String baseURL, String accessToken) {
+    public void setEventListener(BotEventListener listener, String channelName, String baseURL, String accessToken, String clientId) throws Exception {
         this.listener = listener;
         this.channelName = channelName;
-        this.chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken);
+        this.chatMessagesComponent = new ChatMessagesComponent(baseURL, accessToken, clientId);
         this.baseURL = baseURL;
         this.accessToken = accessToken;
+        this.clientId = clientId;
         init();
     }
 
-    private void init() {
+    private void init() throws Exception {
         //list user channels
-        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
         Map<String, String> params = new HashMap<>();
         params.put("userId", "me");
         ListUserChannelsResponse response = chatChannelComponent.listUserChannels(params);

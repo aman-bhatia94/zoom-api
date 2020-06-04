@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class ReportComponent extends BaseComponent {
 
-    public ReportComponent(String baseUri, String token) {
-        super(baseUri, token);
+    public ReportComponent(String baseUri, String token, String clientId) throws Exception {
+        super(baseUri, token, clientId);
     }
 
     public GetMeetingReportResponse getMeetingReports(Map<String, String> params) {

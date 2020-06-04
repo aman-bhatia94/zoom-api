@@ -1,24 +1,35 @@
 package zoomapi.components;
 
+import models.Messages;
+import services.data.MessagesRequestData;
 import utils.ApiClient;
+import utils.DatabaseConnection;
 import utils.StatusCodes;
 import utils.Utils;
 import zoomapi.components.componentRequestData.SendChatMessageRequest;
 import zoomapi.components.componentRequestData.UpdateMessageRequest;
 import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChatMessagesResponse;
 import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
+import zoomapi.components.componentResponseData.Message;
 
 import java.util.Map;
 
 public class ChatMessagesComponent extends BaseComponent {
 
-    public ChatMessagesComponent(String baseUri, String token) {
-        super(baseUri, token);
+    public ChatMessagesComponent(String baseUri, String token, String clientId) throws Exception {
+        super(baseUri, token, clientId);
     }
 
     public ListUserChatMessagesResponse listUserChatMessages(Map<String, String> params) {
         ListUserChatMessagesResponse responseData = null;
         try {
+            //get cached data
+            String dbResponse = DatabaseConnection.getDataDMLService().get(new MessagesRequestData(null, null)).getResponseData();
+            ListUserChatMessagesResponse dbResponseData = GSON.fromJson(dbResponse, ListUserChatMessagesResponse.class);
+            if (!DatabaseConnection.isTimeOut()) {
+                //if not timeout then return data as it is
+                return dbResponseData;
+            }
             Utils.requireKeys(params, new String[]{"userId"}, false);
             String url = getUrl(ApiClient.getApiClient().getBaseUri(),
                     "/chat/users/%s/messages", params,
@@ -29,7 +40,17 @@ public class ChatMessagesComponent extends BaseComponent {
             if (responseMap.containsKey("code")) {
                 throw new Exception(Utils.getErrorMessageFromResponse(responseMap));
             } else {
+                ListUserChatMessagesResponse apiResponseData = GSON.fromJson(response, ListUserChatMessagesResponse.class);
+                //to return new results
+                responseData = apiResponseData;
+                apiResponseData.getMessages().removeAll(dbResponseData.getMessages());
+                //find new records and cache them
+                for (Message message : apiResponseData.getMessages()) {
+                    Messages messages = new Messages(message.getId(), message.getMessage(), message.getSender(), message.getDate_time(), message.getTimestamp());
+                    DatabaseConnection.getDataDMLService().insert(new MessagesRequestData(messages, null));
+                }
                 responseData = GSON.fromJson(response, ListUserChatMessagesResponse.class);
+                DatabaseConnection.getDataDMLService().update(null);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());

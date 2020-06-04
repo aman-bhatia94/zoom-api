@@ -21,17 +21,19 @@ public class NewMemberAddedEvent extends Thread {
     private String accessToken;
     private List<ChannelData> userChannels;
     private Map<String, List<Member>> channelDataMemberMap;
+    private String clientId;
 
-    public void setEventListener(BotEventListener listener, String baseURL, String accessToken) {
+    public void setEventListener(BotEventListener listener, String baseURL, String accessToken, String clientId) throws Exception {
         this.listener = listener;
         this.baseURL = baseURL;
         this.accessToken = accessToken;
+        this.clientId = clientId;
         init();
     }
 
-    private void init() {
+    private void init() throws Exception {
         //list user channels
-        chatChannelComponent = new ChatChannelComponent(baseURL, accessToken);
+        chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
         channelDataMemberMap = new HashMap<>();
         Map<String, String> params = new HashMap<>();
         params.put("userId", "me");
