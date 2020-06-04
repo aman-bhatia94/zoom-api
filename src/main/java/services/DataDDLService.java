@@ -35,10 +35,5 @@ public class DataDDLService {
         }
     }
 
-    public static void main(String[] args) {
-        DataDDLService c = new DataDDLService();
-        Connection conn = DatabaseConnectionService.connect();
-        c.createAllTables(conn);
-    }
 
 }
