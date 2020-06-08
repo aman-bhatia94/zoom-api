@@ -12,6 +12,9 @@ import zoomapi.components.componentResponseData.ChannelResponseData.ListUserChat
 import zoomapi.components.componentResponseData.ChatMessagesResponseData.SendChatMessageResponse;
 import zoomapi.components.componentResponseData.Message;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ChatMessagesComponent extends BaseComponent {
@@ -25,8 +28,10 @@ public class ChatMessagesComponent extends BaseComponent {
         try {
             //get cached data
             String dbResponse = DatabaseConnection.getDataDMLService().get(new MessagesRequestData(null, null)).getResponseData();
-            ListUserChatMessagesResponse dbResponseData = GSON.fromJson(dbResponse, ListUserChatMessagesResponse.class);
-            if (!DatabaseConnection.isTimeOut()) {
+            Messages[] messagesDBResponseData = GSON.fromJson(dbResponse, Messages[].class);
+            ListUserChatMessagesResponse dbResponseData = new ListUserChatMessagesResponse();
+            dbResponseData.setMessages(MapMessagesModelToMessage(Arrays.asList(messagesDBResponseData)));
+            if (!DatabaseConnection.isTimeOut(DatabaseConnection.TimestampModeEnum.MessagesTimestamp)) {
                 //if not timeout then return data as it is
                 return dbResponseData;
             }
@@ -43,19 +48,33 @@ public class ChatMessagesComponent extends BaseComponent {
                 ListUserChatMessagesResponse apiResponseData = GSON.fromJson(response, ListUserChatMessagesResponse.class);
                 //to return new results
                 responseData = apiResponseData;
-                apiResponseData.getMessages().removeAll(dbResponseData.getMessages());
+                List<Message> toBeAdded = new ArrayList<>(apiResponseData.getMessages());
+                toBeAdded.removeAll(dbResponseData.getMessages());
                 //find new records and cache them
-                for (Message message : apiResponseData.getMessages()) {
-                    Messages messages = new Messages(message.getId(), message.getMessage(), message.getSender(), message.getDate_time(), message.getTimestamp());
+                for (Message message : toBeAdded) {
+                    Messages messages = new Messages(null, message.getMessage(), message.getId(), message.getDate_time(), message.getTimestamp());
                     DatabaseConnection.getDataDMLService().insert(new MessagesRequestData(messages, null));
                 }
-                responseData = GSON.fromJson(response, ListUserChatMessagesResponse.class);
-                DatabaseConnection.getDataDMLService().update(null);
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return responseData;
+    }
+
+    private List<Message> MapMessagesModelToMessage(List<Messages> messagesList) {
+        List<Message> list = new ArrayList<>();
+        if (messagesList == null || messagesList.size() == 0) return list;
+        for (Messages messageModel : messagesList) {
+            Message message = new Message();
+            message.setId(messageModel.getMessage_id());
+            message.setMessage(messageModel.getMessage());
+            message.setDate_time(messageModel.getDate_time());
+            message.setTimestamp(messageModel.getTimestamp());
+            list.add(message);
+        }
+        return list;
     }
 
     public SendChatMessageResponse sendChatMessage(Map<String, String> params, SendChatMessageRequest data) {
@@ -79,6 +98,7 @@ public class ChatMessagesComponent extends BaseComponent {
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return responseData;
     }

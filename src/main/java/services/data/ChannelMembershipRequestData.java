@@ -4,9 +4,9 @@ import models.ChannelMembership;
 
 public class ChannelMembershipRequestData {
 
-    final String tableName = "channelmembership";
-    ChannelMembership queryValues;
-    ChannelMembership newValues;
+    public String tableName = "channelmembership";
+    public ChannelMembership queryValues;
+    public ChannelMembership newValues;
 
     public ChannelMembershipRequestData(ChannelMembership queryValues, ChannelMembership newValues) {
         this.queryValues = queryValues;

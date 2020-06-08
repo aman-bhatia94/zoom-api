@@ -22,7 +22,6 @@ public class UpdateMessageEvent extends Thread {
     private BotEventListener listener;
     private String channelName;
     private String channelId;
-    //creating a map of userchatmessage response, we will check timestamps in this list
     private String date;
     private ChatMessagesComponent chatMessagesComponent;
     private String baseURL;
@@ -58,9 +57,7 @@ public class UpdateMessageEvent extends Thread {
 
     @Override
     public void run() {
-
         while (true) {
-
             Map<String, String> params = new HashMap<>();
             params.put("userId", "me");
             params.put("to_channel", channelId);
@@ -68,7 +65,7 @@ public class UpdateMessageEvent extends Thread {
             params.put("page_size", "50");
             ListUserChatMessagesResponse messagesResponse = chatMessagesComponent.listUserChatMessages(params);
             if (messagesResponse != null && messagesResponse.getMessages() != null && messagesResponse.getMessages().size() > 0) {
-                //first check if messae hashmap is already populated or not
+                //first check if message hashmap is already populated or not
                 if (messageHashMap == null) {
                     messageHashMap = new HashMap<>();
                     //iterate over messages in messageResponse and add to the map
@@ -91,6 +88,7 @@ public class UpdateMessageEvent extends Thread {
                 }).collect(Collectors.toList());
                 if (listener != null && updatedMessages.size() > 0) {
                     for (Message msg : updatedMessages) {
+                        messageHashMap.put(msg.getId(), msg);
                         listener.onMessageUpdateEvent(new Object[]{msg});
                     }
                 }

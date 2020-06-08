@@ -22,7 +22,7 @@ public class DataDMLService {
 
     public <T> DBResponseData get(T requestData) throws Exception {
         Class table = requestData.getClass();
-        Field[] mainFields = table.getDeclaredFields();
+        Field[] mainFields = table.getFields();
         Object queryObj = null;
         String tableName = null;
         for (Field mainField : mainFields) {
@@ -32,25 +32,23 @@ public class DataDMLService {
                 tableName = mainField.get(requestData).toString();
             }
         }
-        String finalSql = null;
+        String finalSql;
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT * FROM " + tableName);
-        Field[] fields = queryObj.getClass().getDeclaredFields();
+        sql.append("SELECT * FROM ").append(tableName);
         if (queryObj != null) {
+            Field[] fields = queryObj.getClass().getDeclaredFields();
             sql.append(" WHERE ");
             for (Field field : fields) {
+                field.setAccessible(true);
                 String fieldName = field.getName();
                 Object val = field.get(queryObj);
-                sql.append(fieldName + " = " + val.toString() + " AND ");
-                System.out.println("Name: " + fieldName + "\nval: " + val.toString());
+                if (val == null) continue;
+                sql.append(fieldName).append(" = '").append(val.toString()).append("' AND ");
             }
             String sqlToRun = sql.toString();
             int lastIndexOfAnd = sqlToRun.lastIndexOf("AND");
-            StringBuilder temp = new StringBuilder();
-            temp.append(sqlToRun, 0, lastIndexOfAnd);
-            temp.append(";");
-            finalSql = temp.toString();
+            finalSql = sqlToRun.substring(0, lastIndexOfAnd) + ";";
         } else {
             sql.append(";");
             finalSql = sql.toString();
@@ -74,61 +72,57 @@ public class DataDMLService {
             }
         }
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO " + tableName + "(");
+        sql.append("INSERT INTO ").append(tableName).append("(");
         List<String> fieldNames = new ArrayList<>();
         List<String> values = new ArrayList<>();
         Field[] fields = queryObj.getClass().getDeclaredFields();
         for (Field field : fields) {
+            field.setAccessible(true);
             String fieldName = field.getName();
             Object val = field.get(queryObj);
+            if (val == null) continue;
             fieldNames.add(fieldName);
-            values.add(val.toString());
+            values.add("'" + val.toString() + "'");
         }
+
         sql.append(String.join(",", fieldNames));
-        sql.append(") \n");
-        sql.append("values (default, ");
+        sql.append(") ");
+        sql.append("values (");
         sql.append(String.join(",", values));
         sql.append(")");
         Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(sql.toString());
-        String response = Utils.convertToJSON(rs).toString();
-        return new DBResponseData(0, null, response);
+        statement.executeUpdate(sql.toString());
+        return new DBResponseData(200, null, null);
     }
 
     public <T> DBResponseData delete(T requestData) throws Exception {
         Class table = requestData.getClass();
         Field[] mainFields = table.getDeclaredFields();
         Object queryObj = null;
-        Object newValuesObj = null;
         String tableName = null;
         for (Field mainField : mainFields) {
             if (mainField.getName().contains("queryValues")) {
                 queryObj = mainField.get(requestData);
-            } else if (mainField.getName().contains("newValues")) {
-                newValuesObj = mainField.get(requestData);
             } else if (mainField.getName().contains("tableName")) {
                 tableName = mainField.get(requestData).toString();
             }
         }
-        String finalSql = null;
+        String finalSql;
         StringBuilder sql = new StringBuilder();
 
-        sql.append("DELETE FROM " + tableName);
+        sql.append("DELETE FROM ").append(tableName);
         Field[] fields = queryObj.getClass().getDeclaredFields();
         if (queryObj != null) {
             sql.append(" WHERE ");
             for (Field field : fields) {
                 String fieldName = field.getName();
                 Object val = field.get(queryObj);
-                sql.append(fieldName + " = " + val.toString() + " AND ");
+                sql.append(fieldName).append(" = ").append(val.toString()).append(" AND ");
                 System.out.println("Name: " + fieldName + "\nval: " + val.toString());
             }
             String sqlToRun = sql.toString();
             int lastIndexOfAnd = sqlToRun.lastIndexOf("AND");
-            StringBuilder temp = new StringBuilder();
-            temp.append(sqlToRun, 0, lastIndexOfAnd);
-            temp.append(";");
-            finalSql = temp.toString();
+            finalSql = sqlToRun.substring(0, lastIndexOfAnd) + ";";
         } else {
             sql.append(";");
             finalSql = sql.toString();
@@ -156,15 +150,17 @@ public class DataDMLService {
         }
         StringBuilder sql = new StringBuilder();
 
-        sql.append("UDATE " + tableName + " SET ");
+        sql.append("UPDATE ").append(tableName).append(" SET ");
 
         if (newValuesObj != null) {
             Field[] fields = newValuesObj.getClass().getDeclaredFields();
             List<String> condition = new ArrayList<>();
             for (Field field : fields) {
+                field.setAccessible(true);
                 String fieldName = field.getName();
-                Object val = field.get(queryObj);
-                condition.add(fieldName + " = " + val);
+                Object val = field.get(newValuesObj);
+                if (val == null) continue;
+                condition.add(fieldName + " = '" + val + "'");
             }
             sql.append(String.join(",", condition));
         }
@@ -174,16 +170,18 @@ public class DataDMLService {
             List<String> condition = new ArrayList<>();
             Field[] fields = queryObj.getClass().getDeclaredFields();
             for (Field field : fields) {
+                field.setAccessible(true);
                 String fieldName = field.getName();
                 Object val = field.get(queryObj);
-                condition.add(fieldName + " = " + val);
+                if (val == null) continue;
+                condition.add(fieldName + " = '" + val + "'");
             }
+            sql.append(String.join(",", condition));
         }
 
         sql.append(";");
         Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(sql.toString());
-        JSONArray jsonArray = Utils.convertToJSON(rs);
-        return new DBResponseData(200, "success", jsonArray.toString());
+        statement.executeUpdate(sql.toString());
+        return new DBResponseData(200, "success", null);
     }
 }

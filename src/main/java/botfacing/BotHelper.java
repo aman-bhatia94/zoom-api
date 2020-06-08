@@ -108,6 +108,7 @@ public class BotHelper implements BotEventListener {
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return chatHistory;
     }
@@ -123,6 +124,7 @@ public class BotHelper implements BotEventListener {
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return messageList;
     }
@@ -165,6 +167,4 @@ public class BotHelper implements BotEventListener {
         Member channelMember = (Member) arg[1];
         System.out.println("New Member in channel (" + channelData.getName() + "): " + channelMember);
     }
-
-
 }

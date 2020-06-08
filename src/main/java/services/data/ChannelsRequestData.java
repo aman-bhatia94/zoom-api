@@ -4,9 +4,9 @@ import models.Channels;
 
 public class ChannelsRequestData {
 
-    final String tableName = "channels";
-    Channels queryValues;
-    Channels newValues;
+    public String tableName = "channels";
+    public Channels queryValues;
+    public Channels newValues;
 
     public ChannelsRequestData(Channels queryValues, Channels newValues) {
         this.queryValues = queryValues;

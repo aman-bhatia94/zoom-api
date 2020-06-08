@@ -4,9 +4,9 @@ import models.Credentials;
 
 public class CredentialsRequestData {
 
-    final String tableName = "credentials";
-    Credentials queryValues;
-    Credentials newValues;
+    public String tableName = "credentials";
+    public Credentials queryValues;
+    public Credentials newValues;
 
     public CredentialsRequestData(Credentials queryValues, Credentials newValues) {
         this.queryValues = queryValues;

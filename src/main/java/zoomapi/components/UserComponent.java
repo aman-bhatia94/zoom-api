@@ -33,6 +33,7 @@ public class UserComponent extends BaseComponent {
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return responseData;
     }

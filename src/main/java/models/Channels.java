@@ -16,4 +16,20 @@ public class Channels {
         this.channel_name = channel_name;
         this.channel_type = channel_type;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getChannel_id() {
+        return channel_id;
+    }
+
+    public String getChannel_name() {
+        return channel_name;
+    }
+
+    public String getChannel_type() {
+        return channel_type;
+    }
 }

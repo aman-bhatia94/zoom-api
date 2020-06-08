@@ -13,8 +13,16 @@ public class ListUserChatMessagesResponse extends Response {
         return date;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     @Override

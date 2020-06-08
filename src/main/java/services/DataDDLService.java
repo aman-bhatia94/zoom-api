@@ -23,11 +23,10 @@ public class DataDDLService {
         tables.add(channelMembership);
         tables.add(messages);
         GenericTableCreator genericTableCreator = new GenericTableCreator();
-        for (int i = 0; i < tables.size(); i++) {
-            String sql = genericTableCreator.create(tables.get(i));
+        for (Object table : tables) {
+            String sql = genericTableCreator.create(table);
             try {
                 Statement statement = connection.createStatement();
-                System.out.println(sql);
                 statement.execute(sql);
             } catch (SQLException e) {
                 e.printStackTrace();

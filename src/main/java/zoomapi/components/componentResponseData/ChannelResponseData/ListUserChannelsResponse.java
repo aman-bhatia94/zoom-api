@@ -13,6 +13,10 @@ public class ListUserChannelsResponse extends Response {
         return channels;
     }
 
+    public void setChannels(List<ChannelData> channels) {
+        this.channels = channels;
+    }
+
     @Override
     public String toString() {
         return "ListUserChannelsResponse{" +

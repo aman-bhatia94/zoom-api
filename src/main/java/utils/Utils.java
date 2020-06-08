@@ -70,6 +70,7 @@ public class Utils {
     }
 
     public static LocalDateTime getDateTime(String dateStr) {
+        if (dateStr == null || dateStr.trim().isEmpty()) return null;
         dateStr = dateStr.replace("T", " ");
         dateStr = dateStr.replace("Z", "");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

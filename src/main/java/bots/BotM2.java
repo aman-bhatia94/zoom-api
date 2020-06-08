@@ -68,7 +68,6 @@ public class BotM2 {
             BotM2.display();
             OAuthZoomClient client = new OAuthZoomClient(clientId, clientSecret, port, redirect_url, browserPath);
 
-
             final String baseURL = "https://api.zoom.us/v2";
             final String accessToken = client.getAccessToken();
 
@@ -76,12 +75,12 @@ public class BotM2 {
 
             System.out.println("Enter the channel name for new message event: ");
             String channelName = input.nextLine();
-            System.out.println("---STARTING THE NEW MESSAGE EVENT IN THE BACKGROUND---");
-            helper.registerNewMessageEvent(channelName);
-            System.out.println("---STARTING THE NEW MEMBER EVENT IN THE BACKGROUND---");
-            helper.registerNewMemberAddedEvent();
-            System.out.println("Enter the channel name for update message event: ");
-            channelName = input.nextLine();
+//            System.out.println("---STARTING THE NEW MESSAGE EVENT IN THE BACKGROUND---");
+//            helper.registerNewMessageEvent(channelName);
+//            System.out.println("---STARTING THE NEW MEMBER EVENT IN THE BACKGROUND---");
+//            helper.registerNewMemberAddedEvent();
+//            System.out.println("Enter the channel name for update message event: ");
+//            channelName = input.nextLine();
             System.out.println("---STARTING THE UPDATE MESSAGE EVENT IN THE BACKGROUND---");
             helper.registerUpdateMessageEvent(channelName);
         } catch (Exception ex) {

@@ -90,7 +90,5 @@ public class NewMessageEvent extends Thread {
                 e.printStackTrace();
             }
         }
-
     }
-
 }

@@ -15,6 +15,9 @@ import zoomapi.components.componentResponseData.ChannelData;
 import zoomapi.components.componentResponseData.ChannelResponseData.*;
 import zoomapi.components.componentResponseData.Member;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ChatChannelComponent extends BaseComponent {
@@ -27,8 +30,10 @@ public class ChatChannelComponent extends BaseComponent {
         ListUserChannelsResponse responseData = new ListUserChannelsResponse();
         try {
             String dbResponse = DatabaseConnection.getDataDMLService().get(new ChannelsRequestData(null, null)).getResponseData();
-            ListUserChannelsResponse dbResponseData = GSON.fromJson(dbResponse, ListUserChannelsResponse.class);
-            if (!DatabaseConnection.isTimeOut()) {
+            Channels[] channelsDBResponseArray = GSON.fromJson(dbResponse, Channels[].class);
+            ListUserChannelsResponse dbResponseData = new ListUserChannelsResponse();
+            dbResponseData.setChannels(MapChannelModelToChannelData(Arrays.asList(channelsDBResponseArray)));
+            if (!DatabaseConnection.isTimeOut(DatabaseConnection.TimestampModeEnum.ChannelTimestamp)) {
                 return dbResponseData;
             }
             String url = getUrl(ApiClient.getApiClient().getBaseUri(),
@@ -41,16 +46,31 @@ public class ChatChannelComponent extends BaseComponent {
             } else {
                 ListUserChannelsResponse apiResponseData = GSON.fromJson(response, ListUserChannelsResponse.class);
                 responseData = apiResponseData;
-                apiResponseData.getChannels().removeAll(dbResponseData.getChannels());
+                List<ChannelData> toBeAdded = new ArrayList<>(apiResponseData.getChannels());
+                toBeAdded.removeAll(dbResponseData.getChannels());
                 for (ChannelData channelData : apiResponseData.getChannels()) {
-                    Channels channel = new Channels(0, channelData.getId(), channelData.getName(), channelData.getType().toString());
+                    Channels channel = new Channels(null, channelData.getId(), channelData.getName(), channelData.getType().toString());
                     DatabaseConnection.getDataDMLService().insert(new ChannelsRequestData(channel, null));
                 }
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return responseData;
+    }
+
+    private List<ChannelData> MapChannelModelToChannelData(List<Channels> channelsList) {
+        List<ChannelData> channelDataList = new ArrayList<>();
+        if (channelsList == null || channelsList.size() == 0) return channelDataList;
+        for (Channels channel : channelsList) {
+            ChannelData channelData = new ChannelData();
+            channelData.setId(channel.getChannel_id());
+            channelData.setName(channel.getChannel_name());
+            channelData.setType(Integer.parseInt(channel.getChannel_type()));
+            channelDataList.add(channelData);
+        }
+        return channelDataList;
     }
 
     public CreateChannelResponse createChannel(Map<String, String> params, CreateChannelRequest data) {
@@ -144,8 +164,10 @@ public class ChatChannelComponent extends BaseComponent {
         ListChannelMemberResponse responseData = null;
         try {
             String dbResponse = DatabaseConnection.getDataDMLService().get(new ChannelMembershipRequestData(null, null)).getResponseData();
-            ListChannelMemberResponse dbResponseData = GSON.fromJson(dbResponse, ListChannelMemberResponse.class);
-            if (!DatabaseConnection.isTimeOut()) {
+            ChannelMembership[] channelDBResponseData = GSON.fromJson(dbResponse, ChannelMembership[].class);
+            ListChannelMemberResponse dbResponseData = new ListChannelMemberResponse();
+            dbResponseData.setMembers(MapChannelMembershipsToMembers(Arrays.asList(channelDBResponseData)));
+            if (!DatabaseConnection.isTimeOut(DatabaseConnection.TimestampModeEnum.ChannelMembershipTimeStamp)) {
                 return dbResponseData;
             }
             Utils.requireKeys(params, new String[]{"channelId"}, false);
@@ -160,19 +182,41 @@ public class ChatChannelComponent extends BaseComponent {
             } else {
                 ListChannelMemberResponse apiResponseData = GSON.fromJson(response, ListChannelMemberResponse.class);
                 responseData = apiResponseData;
-                apiResponseData.getMembers().removeAll(dbResponseData.getMembers());
-                for (Member member : apiResponseData.getMembers()) {
-                    ChannelMembership channelMembership = new ChannelMembership(0, params.get("channelId"),
+                List<Member> toBeAdded = new ArrayList<>(apiResponseData.getMembers());
+                for (Member member : toBeAdded) {
+                    member.setChannelId(params.get("channelId"));
+                }
+                toBeAdded.removeAll(dbResponseData.getMembers());
+                for (Member member : toBeAdded) {
+                    ChannelMembership channelMembership = new ChannelMembership(null, params.get("channelId"),
                             member.getId(), member.getFirst_name(), member.getLast_name(), member.getEmail(), member.getRole());
                     DatabaseConnection.getDataDMLService().insert(new ChannelMembershipRequestData(channelMembership, null));
                 }
-                responseData = GSON.fromJson(response, ListChannelMemberResponse.class);
-                DatabaseConnection.getDataDMLService().update(null);
+//                List<Member> toBeDeleted = new ArrayList<>(dbResponseData.getMembers());
+//                toBeDeleted
+
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return responseData;
+    }
+
+    private List<Member> MapChannelMembershipsToMembers(List<ChannelMembership> channelMemberships) {
+        List<Member> list = new ArrayList<>();
+        if (channelMemberships == null || channelMemberships.size() == 0) return list;
+        for (ChannelMembership membership : channelMemberships) {
+            Member member = new Member();
+            member.setEmail(membership.getEmail());
+            member.setFirst_name(membership.getFirst_name());
+            member.setId(membership.getMember_id());
+            member.setLast_name(membership.getLast_name());
+            member.setRole(membership.getRole());
+            member.setChannelId(membership.getChannel_id());
+            list.add(member);
+        }
+        return list;
     }
 
     public InviteChannelMembersResponse inviteChannelMembers(Map<String, String> params, InviteChannelMembersRequest data) {

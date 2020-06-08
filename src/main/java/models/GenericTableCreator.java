@@ -11,12 +11,9 @@ public class GenericTableCreator {
 
         Field[] fields = tableClass.getDeclaredFields();
 
-        System.out.println("Fields: " + fields.length);
-
         StringBuilder sql = new StringBuilder();
         String tableName = tableClass.getName().split("\\.")[1];
-        sql.append("CREATE TABLE IF NOT EXISTS " + tableName.toLowerCase() + " ( ");
-        sql.append("id INTEGER PRIMARY KEY AUTOINCREMENT, ");
+        sql.append("CREATE TABLE IF NOT EXISTS ").append(tableName.toLowerCase()).append(" ( ").append("id INTEGER PRIMARY KEY AUTOINCREMENT, ");
 
 
         int num_fields = fields.length;

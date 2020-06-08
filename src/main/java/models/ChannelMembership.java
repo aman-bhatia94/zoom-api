@@ -22,4 +22,32 @@ public class ChannelMembership {
 
     public ChannelMembership() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getChannel_id() {
+        return channel_id;
+    }
+
+    public String getMember_id() {
+        return member_id;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

@@ -5,7 +5,6 @@ public class DBResponseData {
     String errorMessage;
     String responseData;
 
-
     public DBResponseData(int error, String errorMessage, String responseData) {
         this.error = error;
         this.errorMessage = errorMessage;
