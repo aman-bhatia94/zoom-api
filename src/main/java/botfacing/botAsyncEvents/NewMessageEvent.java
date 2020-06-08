@@ -37,7 +37,7 @@ public class NewMessageEvent extends Thread {
         init();
     }
 
-    private void init() throws Exception {
+    private void init() {
         //list user channels
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
         Map<String, String> params = new HashMap<>();

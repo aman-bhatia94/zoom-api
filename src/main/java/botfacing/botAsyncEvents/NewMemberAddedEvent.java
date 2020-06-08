@@ -31,7 +31,7 @@ public class NewMemberAddedEvent extends Thread {
         init();
     }
 
-    private void init() throws Exception {
+    private void init() {
         //list user channels
         chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
         channelDataMemberMap = new HashMap<>();

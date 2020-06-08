@@ -48,7 +48,7 @@ public class ChatChannelComponent extends BaseComponent {
                 responseData = apiResponseData;
                 List<ChannelData> toBeAdded = new ArrayList<>(apiResponseData.getChannels());
                 toBeAdded.removeAll(dbResponseData.getChannels());
-                for (ChannelData channelData : apiResponseData.getChannels()) {
+                for (ChannelData channelData : toBeAdded) {
                     Channels channel = new Channels(null, channelData.getId(), channelData.getName(), channelData.getType().toString());
                     DatabaseConnection.getDataDMLService().insert(new ChannelsRequestData(channel, null));
                 }

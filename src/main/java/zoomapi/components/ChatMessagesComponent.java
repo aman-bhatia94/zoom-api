@@ -55,6 +55,17 @@ public class ChatMessagesComponent extends BaseComponent {
                     Messages messages = new Messages(null, message.getMessage(), message.getId(), message.getDate_time(), message.getTimestamp());
                     DatabaseConnection.getDataDMLService().insert(new MessagesRequestData(messages, null));
                 }
+
+                List<Message> toBeUpdated = new ArrayList<>(dbResponseData.getMessages());
+                for (Message message : toBeUpdated) {
+                    Message newDetails = apiResponseData.getMessages().stream().filter(msg -> msg.getId().equals(message.getId())).findFirst().orElse(null);
+                    if (newDetails == null) {
+                        continue;
+                    }
+                    Messages oldDetails = new Messages(null, null, message.getId(), null, null);
+                    Messages newDetailsModel = new Messages(null, newDetails.getMessage(), null, null, null);
+                    DatabaseConnection.getDataDMLService().update(new MessagesRequestData(oldDetails, newDetailsModel));
+                }
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());

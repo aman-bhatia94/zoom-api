@@ -10,11 +10,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class DataDMLService {
 
-    Connection connection;
+    final Connection connection;
 
     public DataDMLService(Connection connection) {
         this.connection = connection;
@@ -75,7 +76,7 @@ public class DataDMLService {
         sql.append("INSERT INTO ").append(tableName).append("(");
         List<String> fieldNames = new ArrayList<>();
         List<String> values = new ArrayList<>();
-        Field[] fields = queryObj.getClass().getDeclaredFields();
+        Field[] fields = Objects.requireNonNull(queryObj).getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
             String fieldName = field.getName();
@@ -111,22 +112,17 @@ public class DataDMLService {
         StringBuilder sql = new StringBuilder();
 
         sql.append("DELETE FROM ").append(tableName);
-        Field[] fields = queryObj.getClass().getDeclaredFields();
-        if (queryObj != null) {
-            sql.append(" WHERE ");
-            for (Field field : fields) {
-                String fieldName = field.getName();
-                Object val = field.get(queryObj);
-                sql.append(fieldName).append(" = ").append(val.toString()).append(" AND ");
-                System.out.println("Name: " + fieldName + "\nval: " + val.toString());
-            }
-            String sqlToRun = sql.toString();
-            int lastIndexOfAnd = sqlToRun.lastIndexOf("AND");
-            finalSql = sqlToRun.substring(0, lastIndexOfAnd) + ";";
-        } else {
-            sql.append(";");
-            finalSql = sql.toString();
+        Field[] fields = Objects.requireNonNull(queryObj).getClass().getDeclaredFields();
+        sql.append(" WHERE ");
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            Object val = field.get(queryObj);
+            sql.append(fieldName).append(" = ").append(val.toString()).append(" AND ");
+            System.out.println("Name: " + fieldName + "\nval: " + val.toString());
         }
+        String sqlToRun = sql.toString();
+        int lastIndexOfAnd = sqlToRun.lastIndexOf("AND");
+        finalSql = sqlToRun.substring(0, lastIndexOfAnd) + ";";
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(finalSql);
         JSONArray jsonArray = Utils.convertToJSON(rs);

@@ -68,4 +68,6 @@ public class Message {
                 message.getMessage().equals(this.message) &&
                 message.getDate_time().equals(this.date_time);
     }
+
+
 }

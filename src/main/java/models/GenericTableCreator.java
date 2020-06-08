@@ -33,14 +33,13 @@ public class GenericTableCreator {
                 //we have already added id, and by convention it is PRIMARY KEY AUTO INCREMENT
                 continue;
             }
+            String columnToAppend;
             if (i == num_fields - 1) {
-
-                String columnToAppend = field.getName() + " " + column_type + " NOT NULL ); ";
-                sql.append(columnToAppend);
+                columnToAppend = field.getName() + " " + column_type + " NOT NULL ); ";
             } else {
-                String columnToAppend = field.getName() + " " + column_type + " NOT NULL, ";
-                sql.append(columnToAppend);
+                columnToAppend = field.getName() + " " + column_type + " NOT NULL, ";
             }
+            sql.append(columnToAppend);
         }
         return sql.toString();
     }

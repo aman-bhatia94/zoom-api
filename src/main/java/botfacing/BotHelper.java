@@ -26,10 +26,10 @@ public class BotHelper implements BotEventListener {
     private final String baseURL;
     private final String accessToken;
     private final String clientId;
-    public String clientSecret;
-    public String port;
-    public String browserPath;
-    public String redirect_url;
+    public final String clientSecret;
+    public final String port;
+    public final String browserPath;
+    public final String redirect_url;
 
 
     public BotHelper(String baseURL, String accessToken, String clientId, String clientSecret, String port, String browserPath, String redirect_url) {
@@ -42,7 +42,7 @@ public class BotHelper implements BotEventListener {
         this.redirect_url = redirect_url;
     }
 
-    public SendChatMessageResponse sendMessages(String channelName, String message) throws Exception {
+    public SendChatMessageResponse sendMessages(String channelName, String message) {
 
         //list user channels
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);

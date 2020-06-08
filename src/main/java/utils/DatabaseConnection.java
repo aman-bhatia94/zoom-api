@@ -15,7 +15,6 @@ public class DatabaseConnection {
     private static final long TIMEOUT_IN_MIN = 1;
     private static DataDDLService dataDDLService;
     private static DataDMLService dataDMLService;
-    private static Connection connection;
     private static LocalDateTime ChannelMembershipTimeStamp;
     private static LocalDateTime ChannelTimestamp;
     private static LocalDateTime CredentialsTimestamp;
@@ -34,7 +33,7 @@ public class DatabaseConnection {
     }
 
     public static void init() {
-        connection = DatabaseConnectionService.connect();
+        Connection connection = DatabaseConnectionService.connect();
         dataDDLService = new DataDDLService();
         dataDDLService.createAllTables(connection);
         dataDMLService = new DataDMLService(connection);
@@ -71,7 +70,7 @@ public class DatabaseConnection {
         }
     }
 
-    public static boolean isTimeOut(TimestampModeEnum timeoutMode) throws Exception {
+    public static boolean isTimeOut(TimestampModeEnum timeoutMode) {
         LocalDateTime latestTimeStamp = null;
         if (timeoutMode == TimestampModeEnum.ChannelMembershipTimeStamp) {
             latestTimeStamp = ChannelMembershipTimeStamp;

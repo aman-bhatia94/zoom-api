@@ -39,7 +39,7 @@ public class UpdateMessageEvent extends Thread {
     }
 
     //sets the required channel
-    private void init() throws Exception {
+    private void init() {
         //list user channels
         date = Utils.getTimeStampString(LocalDateTime.now(ZoneOffset.UTC));
         ChatChannelComponent chatChannelComponent = new ChatChannelComponent(baseURL, accessToken, clientId);
