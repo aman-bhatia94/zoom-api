@@ -8,7 +8,7 @@ import zoomapi.components.componentResponseData.RecordingComponentData.ListAllRe
 import java.util.Map;
 
 public class RecordingComponent extends BaseComponent {
-    public RecordingComponent(String baseUri, String token, String clientId) throws Exception {
+    public RecordingComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 

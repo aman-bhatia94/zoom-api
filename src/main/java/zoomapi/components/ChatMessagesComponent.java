@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ChatMessagesComponent extends BaseComponent {
 
-    public ChatMessagesComponent(String baseUri, String token, String clientId) throws Exception {
+    public ChatMessagesComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 

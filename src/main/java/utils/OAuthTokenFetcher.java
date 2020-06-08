@@ -30,7 +30,7 @@ public class OAuthTokenFetcher {
 
         try {
             Gson gson = new Gson();
-            DatabaseConnection.init(client_id, null);
+            DatabaseConnection.init();
             Credentials credentials = new Credentials(null, client_id, null, null);
             CredentialsRequestData requestData = new CredentialsRequestData(credentials, null);
             DBResponseData responseData = DatabaseConnection.getDataDMLService().get(requestData);

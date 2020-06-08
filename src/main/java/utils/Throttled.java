@@ -2,7 +2,7 @@ package utils;
 
 public class Throttled {
 
-    final static int SLEEP_TIME = 5000;
+    final static int SLEEP_TIME = 3000;
 
     public void throttle() {
 //         Zoom has been rapidly changing

@@ -13,9 +13,9 @@ public class BaseComponent {
     static final Gson GSON = new Gson();
     static final Throttled THROTTLED = new Throttled();
 
-    public BaseComponent(String baseUri, String token, String clientId) throws Exception {
+    public BaseComponent(String baseUri, String token, String clientId) {
         ApiClient.init(baseUri, token);
-        DatabaseConnection.init(clientId, token);
+        DatabaseConnection.init();
     }
 
     public static String getUrl(String baseUrl, String apiUrl, Map<String, String> params, String[] urlParams,

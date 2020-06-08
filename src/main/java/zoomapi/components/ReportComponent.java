@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ReportComponent extends BaseComponent {
 
-    public ReportComponent(String baseUri, String token, String clientId) throws Exception {
+    public ReportComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 

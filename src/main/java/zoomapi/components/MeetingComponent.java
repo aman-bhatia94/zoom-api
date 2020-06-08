@@ -11,7 +11,7 @@ import zoomapi.components.componentResponseData.MeetingResponseData.ListMeetings
 import java.util.Map;
 
 public class MeetingComponent extends BaseComponent {
-    public MeetingComponent(String baseUri, String token, String clientId) throws Exception {
+    public MeetingComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 

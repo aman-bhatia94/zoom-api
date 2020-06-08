@@ -73,16 +73,16 @@ public class BotM2 {
 
             BotHelper helper = new BotHelper(baseURL, accessToken, clientId, clientSecret, port, redirect_url, browserPath);
 
-            System.out.println("Enter the channel name for new message event: ");
-            String channelName = input.nextLine();
+//            System.out.println("Enter the channel name for new message event: ");
+//            String channelName = input.nextLine();
 //            System.out.println("---STARTING THE NEW MESSAGE EVENT IN THE BACKGROUND---");
 //            helper.registerNewMessageEvent(channelName);
-//            System.out.println("---STARTING THE NEW MEMBER EVENT IN THE BACKGROUND---");
-//            helper.registerNewMemberAddedEvent();
+            System.out.println("---STARTING THE NEW MEMBER EVENT IN THE BACKGROUND---");
+            helper.registerNewMemberAddedEvent();
 //            System.out.println("Enter the channel name for update message event: ");
 //            channelName = input.nextLine();
-            System.out.println("---STARTING THE UPDATE MESSAGE EVENT IN THE BACKGROUND---");
-            helper.registerUpdateMessageEvent(channelName);
+//            System.out.println("---STARTING THE UPDATE MESSAGE EVENT IN THE BACKGROUND---");
+//            helper.registerUpdateMessageEvent(channelName);
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
             ex.printStackTrace();

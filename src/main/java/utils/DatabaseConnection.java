@@ -1,7 +1,5 @@
 package utils;
 
-import com.google.gson.Gson;
-import models.Credentials;
 import services.DataDDLService;
 import services.DataDMLService;
 import services.DatabaseConnectionService;
@@ -13,16 +11,11 @@ import java.time.ZoneOffset;
 
 public class DatabaseConnection {
 
-    static final Gson GSON = new Gson();
-
     //cache after every 15 minutes
-    private static final long TIMEOUT_IN_MIN = 15;
+    private static final long TIMEOUT_IN_MIN = 1;
     private static DataDDLService dataDDLService;
     private static DataDMLService dataDMLService;
     private static Connection connection;
-    private static String clientId;
-    private static String token;
-    private static Credentials credentials;
     private static LocalDateTime ChannelMembershipTimeStamp;
     private static LocalDateTime ChannelTimestamp;
     private static LocalDateTime CredentialsTimestamp;
@@ -40,13 +33,11 @@ public class DatabaseConnection {
         return dataDMLService;
     }
 
-    public static void init(String clientId1, String token1) {
+    public static void init() {
         connection = DatabaseConnectionService.connect();
         dataDDLService = new DataDDLService();
         dataDDLService.createAllTables(connection);
         dataDMLService = new DataDMLService(connection);
-        clientId = clientId1;
-        token = token1;
     }
 
     private static String getLatestTimestamp(TimestampModeEnum timeoutMode) {

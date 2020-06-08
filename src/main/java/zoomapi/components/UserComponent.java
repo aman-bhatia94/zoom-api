@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class UserComponent extends BaseComponent {
 
-    public UserComponent(String baseUri, String token, String clientId) throws Exception {
+    public UserComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 

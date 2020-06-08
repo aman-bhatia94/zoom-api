@@ -10,7 +10,7 @@ import zoomapi.components.componentResponseData.WebinarResponseData.ListWebinars
 import java.util.Map;
 
 public class WebinarComponent extends BaseComponent {
-    public WebinarComponent(String baseUri, String token, String clientId) throws Exception {
+    public WebinarComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 

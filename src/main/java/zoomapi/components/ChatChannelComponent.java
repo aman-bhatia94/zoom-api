@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class ChatChannelComponent extends BaseComponent {
 
-    public ChatChannelComponent(String baseUri, String token, String clientId) throws Exception {
+    public ChatChannelComponent(String baseUri, String token, String clientId) {
         super(baseUri, token, clientId);
     }
 
@@ -192,8 +192,13 @@ public class ChatChannelComponent extends BaseComponent {
                             member.getId(), member.getFirst_name(), member.getLast_name(), member.getEmail(), member.getRole());
                     DatabaseConnection.getDataDMLService().insert(new ChannelMembershipRequestData(channelMembership, null));
                 }
-//                List<Member> toBeDeleted = new ArrayList<>(dbResponseData.getMembers());
-//                toBeDeleted
+                List<Member> toBeDeleted = new ArrayList<>(dbResponseData.getMembers());
+                toBeDeleted.removeAll(apiResponseData.getMembers());
+                for (Member member : toBeDeleted) {
+                    ChannelMembership channelMembership = new ChannelMembership(null, params.get("channelId"),
+                            member.getId(), null, null, null, null);
+                    DatabaseConnection.getDataDMLService().delete(new ChannelMembershipRequestData(channelMembership, null));
+                }
 
             }
         } catch (Exception ex) {
