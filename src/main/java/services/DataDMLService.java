@@ -155,33 +155,30 @@ public class DataDMLService {
         if (newValuesObj != null) {
             Field[] fields = newValuesObj.getClass().getDeclaredFields();
             List<String> condition = new ArrayList<>();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String fieldName = field.getName();
-                Object val = field.get(newValuesObj);
-                if (val == null) continue;
-                condition.add(fieldName + " = '" + val + "'");
-            }
-            sql.append(String.join(",", condition));
+            getSQLCondition(newValuesObj, sql, fields, condition);
         }
 
         if (queryObj != null) {
             sql.append("WHERE ");
             List<String> condition = new ArrayList<>();
             Field[] fields = queryObj.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String fieldName = field.getName();
-                Object val = field.get(queryObj);
-                if (val == null) continue;
-                condition.add(fieldName + " = '" + val + "'");
-            }
-            sql.append(String.join(",", condition));
+            getSQLCondition(queryObj, sql, fields, condition);
         }
 
         sql.append(";");
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql.toString());
         return new DBResponseData(200, "success", null);
+    }
+
+    private void getSQLCondition(Object newValuesObj, StringBuilder sql, Field[] fields, List<String> condition) throws IllegalAccessException {
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            Object val = field.get(newValuesObj);
+            if (val == null) continue;
+            condition.add(fieldName + " = '" + val + "'");
+        }
+        sql.append(String.join(",", condition));
     }
 }
